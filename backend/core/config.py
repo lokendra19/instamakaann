@@ -24,3 +24,4 @@ ACCESS_TOKEN_EXPIRE_MINUTES = int(
 
 # CORS
 CORS_ORIGINS = os.environ.get("CORS_ORIGINS", "*").split(",")
+CORS_ORIGINS = ["*"]
