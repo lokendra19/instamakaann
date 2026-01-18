@@ -10,23 +10,35 @@ import {
 	BadgeCheck,
 	CalendarDays,
 	CheckCircle,
+	Home,
+	Sofa,
+	Bed,
+	Lightbulb,
+	Fan,
+	Wifi,
+	ShieldCheck,
+	Car,
+	ChefHat,
+	Plug,
 } from 'lucide-react';
 
-/* ---------------- ICON MAP ---------------- */
+/* ---------------- ICON MAP (NO EMOJIS) ---------------- */
 const iconMap = {
-	Lift: '🛗',
-	Parking: '🚗',
-	Security: '🛡️',
-	Wifi: '📶',
-	Light: '💡',
-	Fan: '🌀',
-	Switch: '🔘',
-	Wardrobe: '🚪',
-	Bed: '🛏️',
-	'Study table': '🪑',
-	'Modular kitchen': '🍳',
-	Tap: '🚰',
-	Sink: '🚿',
+	Lift: <Home size={14} />,
+	Parking: <Car size={14} />,
+	'24x7 Security': <ShieldCheck size={14} />,
+	Security: <ShieldCheck size={14} />,
+	Wifi: <Wifi size={14} />,
+	Light: <Lightbulb size={14} />,
+	Fan: <Fan size={14} />,
+	Sofa: <Sofa size={14} />,
+	Bed: <Bed size={14} />,
+	Fridge: <ChefHat size={14} />,
+	Microwave: <ChefHat size={14} />,
+	'RO Water Purifier': <ChefHat size={14} />,
+	'Gas Pipeline': <Plug size={14} />,
+	AC: <Plug size={14} />,
+	TV: <Plug size={14} />,
 };
 
 /* ---------------- AMENITY COLOR MAP ---------------- */
@@ -40,7 +52,7 @@ const amenityBgMap = {
 		'bg-purple-50 dark:bg-purple-900/20 border-purple-200 dark:border-purple-800',
 };
 
-/* ---------------- PARSER ---------------- */
+/* ---------------- PARSER (FIXED – GROUP WISE) ---------------- */
 const parseAmenities = (amenitiesArray = []) => {
 	const base = {
 		House: [],
@@ -50,13 +62,19 @@ const parseAmenities = (amenitiesArray = []) => {
 	};
 
 	amenitiesArray.forEach((item) => {
-		if (typeof item === 'string') {
-			try {
-				const parsed = JSON.parse(item);
-				Object.keys(parsed).forEach((key) => {
-					if (base[key]) base[key] = parsed[key];
-				});
-			} catch (e) {}
+		// Case 1: "House:Lift"
+		if (typeof item === 'string' && item.includes(':')) {
+			const [section, value] = item.split(':');
+			if (base[section]) base[section].push(value);
+		}
+
+		// Case 2: { House: ["Lift", "Power Backup"] }
+		if (typeof item === 'object' && item !== null) {
+			Object.entries(item).forEach(([section, values]) => {
+				if (base[section] && Array.isArray(values)) {
+					base[section].push(...values);
+				}
+			});
 		}
 	});
 
@@ -73,13 +91,13 @@ const PropertyDetailPage = () => {
 	useEffect(() => {
 		const load = async () => {
 			const res = await fetch(
-				`${process.env.REACT_APP_BACKEND_URL}/api/properties/${id}`
+				`${process.env.REACT_APP_BACKEND_URL}/api/properties/${id}`,
 			);
 			const data = await res.json();
 			setProperty(data);
 
 			const listRes = await fetch(
-				`${process.env.REACT_APP_BACKEND_URL}/api/properties`
+				`${process.env.REACT_APP_BACKEND_URL}/api/properties`,
 			);
 			const list = await listRes.json();
 			setRelated(list.filter((p) => p.id !== data.id).slice(0, 2));
@@ -189,10 +207,9 @@ const PropertyDetailPage = () => {
 					</div>
 				</div>
 
-				{/* RIGHT SIDEBAR (MERGED) */}
+				{/* RIGHT SIDEBAR */}
 				<div className="sticky top-24 self-start h-fit">
 					<div className="bg-white dark:bg-neutral-900 rounded-2xl shadow-lg overflow-hidden">
-						{/* CONTACT */}
 						<div className="p-6 border-b border-gray-200 dark:border-neutral-700">
 							<h3 className="font-semibold mb-4 flex items-center gap-2">
 								<CalendarDays className="text-teal-600" />
@@ -212,7 +229,6 @@ const PropertyDetailPage = () => {
 							</button>
 						</div>
 
-						{/* PEOPLE ALSO SEARCHED */}
 						<div className="p-6">
 							<h4 className="font-semibold mb-4">People also searched</h4>
 

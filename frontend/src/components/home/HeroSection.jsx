@@ -15,11 +15,11 @@ const Dropdown = ({ icon: Icon, label, value, setValue, options }) => {
 	}, []);
 
 	return (
-		<div ref={ref} className="relative w-full">
+		<div ref={ref} className="relative w-full sm:w-auto">
 			<button
 				onClick={() => setOpen(!open)}
 				className="
-					w-full h-11 px-3 flex items-center justify-between
+					w-full h-12 sm:h-11 px-3 flex items-center justify-between
 					rounded-xl border
 					bg-white dark:bg-[#0b1220]
 					border-slate-300/50 dark:border-white/10
@@ -46,6 +46,7 @@ const Dropdown = ({ icon: Icon, label, value, setValue, options }) => {
 					bg-white dark:bg-[#0b1220]
 					border border-slate-200 dark:border-white/10
 					shadow-xl
+					max-h-[180px] overflow-y-auto
 					transition-all duration-200
 					${open ? 'opacity-100 scale-100' : 'opacity-0 scale-95 pointer-events-none'}
 				`}
@@ -79,7 +80,6 @@ export const HeroSection = () => {
 	const [budget, setBudget] = useState('');
 	const [bhk, setBhk] = useState('');
 
-	// NEW STATES (added only)
 	const [searchText, setSearchText] = useState('');
 	const [rentType, setRentType] = useState('Full House');
 	const [buyType, setBuyType] = useState('Full House');
@@ -112,7 +112,7 @@ export const HeroSection = () => {
 	};
 
 	return (
-		<section className="relative min-h-screen flex items-center justify-center overflow-hidden -mt-14">
+		<section className="relative min-h-[90vh] sm:min-h-screen flex items-center justify-center overflow-hidden -mt-14">
 			<div
 				className="absolute inset-0 bg-cover bg-center scale-105"
 				style={{ backgroundImage: `url('${bgImages[activeTab]}')` }}
@@ -121,13 +121,13 @@ export const HeroSection = () => {
 			<div className="absolute inset-0 bg-gradient-to-b from-white/70 via-white/60 to-white/80 dark:from-[#0b1220]/90 dark:via-[#0b1220]/85 dark:to-[#0b1220]/95" />
 
 			{/* TABS */}
-			<div className="absolute top-28 left-1/2 -translate-x-1/2 z-20">
+			<div className="absolute top-20 sm:top-28 left-1/2 -translate-x-1/2 z-20 px-2">
 				<div className="flex bg-white/90 dark:bg-[#0b1220]/80 backdrop-blur-xl rounded-full p-1 border border-slate-200/50 dark:border-white/10 shadow-lg">
 					{['rent', 'pre', 'buy'].map((tab) => (
 						<button
 							key={tab}
 							onClick={() => setActiveTab(tab)}
-							className={`px-5 py-2 rounded-full text-sm font-medium transition-all
+							className={`px-4 sm:px-5 py-2 rounded-full text-sm font-medium transition-all
 								${
 									activeTab === tab
 										? 'bg-teal-600 text-white shadow'
@@ -141,25 +141,25 @@ export const HeroSection = () => {
 			</div>
 
 			{/* CONTENT */}
-			<div className="relative z-10 text-center max-w-6xl px-4">
-				<h1 className="text-4xl md:text-5xl font-bold text-slate-900 dark:text-white">
+			<div className="relative z-10 text-center max-w-6xl px-4 mt-20 sm:mt-0">
+				<h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-slate-900 dark:text-white">
 					{tabText[activeTab].title}
 					<span className="text-teal-600 dark:text-teal-400">
 						{tabText[activeTab].highlight}
 					</span>
 				</h1>
 
-				<p className="mt-4 text-slate-600 dark:text-slate-300">
+				<p className="mt-3 sm:mt-4 text-slate-600 dark:text-slate-300">
 					{tabText[activeTab].subtitle}
 				</p>
 
 				{/* SEARCH BAR */}
-				<div className="mt-10 bg-white/90 dark:bg-[#0b1220]/85 backdrop-blur-xl shadow-2xl rounded-2xl px-6 py-6 flex flex-wrap md:flex-nowrap gap-4 items-center border border-slate-200/50 dark:border-white/10 max-w-6xl mx-auto">
-					{/* RADIO BUTTONS (SEARCH SE PEHLE) */}
+				<div className="mt-8 sm:mt-10 bg-white/90 dark:bg-[#0b1220]/85 backdrop-blur-xl shadow-2xl rounded-2xl px-4 sm:px-6 py-6 flex flex-col md:flex-row gap-4 items-stretch md:items-center border border-slate-200/50 dark:border-white/10 max-w-6xl mx-auto">
+					{/* RADIO BUTTONS */}
 					{activeTab === 'rent' && (
-						<div className="flex gap-4 text-sm text-slate-700 dark:text-slate-200">
+						<div className="flex flex-wrap gap-4 text-sm text-slate-700 dark:text-slate-200">
 							{['Full House', 'Flatmate'].map((o) => (
-								<label key={o} className="flex items-center gap-1">
+								<label key={o} className="flex items-center gap-2">
 									<input
 										type="radio"
 										checked={rentType === o}
@@ -172,9 +172,9 @@ export const HeroSection = () => {
 					)}
 
 					{activeTab === 'buy' && (
-						<div className="flex gap-4 text-sm text-slate-700 dark:text-slate-200">
+						<div className="flex flex-wrap gap-4 text-sm text-slate-700 dark:text-slate-200">
 							{['Full House', 'Land / Plot'].map((o) => (
-								<label key={o} className="flex items-center gap-1">
+								<label key={o} className="flex items-center gap-2">
 									<input
 										type="radio"
 										checked={buyType === o}
@@ -187,9 +187,9 @@ export const HeroSection = () => {
 					)}
 
 					{activeTab === 'pre' && (
-						<div className="flex gap-4 text-sm text-slate-700 dark:text-slate-200">
+						<div className="flex flex-wrap gap-4 text-sm text-slate-700 dark:text-slate-200">
 							{['Rent', 'Buy'].map((o) => (
-								<label key={o} className="flex items-center gap-1">
+								<label key={o} className="flex items-center gap-2">
 									<input
 										type="radio"
 										checked={preType === o}
@@ -201,7 +201,6 @@ export const HeroSection = () => {
 						</div>
 					)}
 
-					{/* CITY */}
 					<Dropdown
 						icon={MapPin}
 						label="City"
@@ -210,15 +209,13 @@ export const HeroSection = () => {
 						options={['Noida', 'Greater Noida']}
 					/>
 
-					{/* SEARCH INPUT */}
 					<input
 						value={searchText}
 						onChange={(e) => setSearchText(e.target.value)}
 						placeholder="Search localities or landmarks"
-						className="h-11 px-4 rounded-xl border bg-white dark:bg-[#0b1220] text-sm w-full md:w-72"
+						className="h-12 sm:h-11 px-4 rounded-xl border bg-white dark:bg-[#0b1220] text-sm w-full md:w-72"
 					/>
 
-					{/* DROPDOWNS */}
 					{activeTab === 'rent' && (
 						<Dropdown
 							label="BHK Type"
@@ -255,7 +252,7 @@ export const HeroSection = () => {
 						/>
 					)}
 
-					<button className="h-11 px-8 bg-yellow-400 hover:bg-yellow-500 text-black rounded-xl font-semibold flex items-center gap-2 shadow-md">
+					<button className="h-12 sm:h-11 px-8 bg-yellow-400 hover:bg-yellow-500 text-black rounded-xl font-semibold flex items-center justify-center gap-2 shadow-md">
 						<Search className="w-4 h-4" />
 						Search
 					</button>

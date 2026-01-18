@@ -11,13 +11,13 @@ export const CommunitySection = () => {
 	];
 
 	return (
-		<section className="py-16 bg-slate-50 dark:bg-[#0b1220]">
-			<div className="max-w-7xl mx-auto px-5">
-				<div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+		<section className="py-16 sm:py-20 bg-slate-50 dark:bg-[#0b1220]">
+			<div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-5">
+				<div className="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-12 items-center">
 					{/* LEFT : VISUAL */}
-					<div className="flex justify-center">
-						<div className="rounded-3xl p-12 bg-gradient-to-br from-teal-500/10 to-yellow-400/10">
-							<div className="relative w-[320px] h-[320px] max-sm:w-[260px] max-sm:h-[260px]">
+					<div className="flex justify-center order-2 lg:order-1">
+						<div className="rounded-3xl p-6 sm:p-10 lg:p-12 bg-gradient-to-br from-teal-500/10 to-yellow-400/10">
+							<div className="relative w-[260px] h-[260px] sm:w-[300px] sm:h-[300px] lg:w-[320px] lg:h-[320px]">
 								{/* Radiating lines */}
 								<svg className="absolute inset-0" viewBox="0 0 400 400">
 									{benefits.map((_, index) => {
@@ -41,7 +41,7 @@ export const CommunitySection = () => {
 								</svg>
 
 								{/* Center logo */}
-								<div className="absolute inset-1/2 -translate-x-1/2 -translate-y-1/2 w-28 h-28 max-sm:w-24 max-sm:h-24 rounded-2xl bg-teal-600 text-white flex items-center justify-center text-3xl font-bold shadow-xl z-10">
+								<div className="absolute inset-1/2 -translate-x-1/2 -translate-y-1/2 w-24 h-24 sm:w-28 sm:h-28 rounded-2xl bg-teal-600 text-white flex items-center justify-center text-2xl sm:text-3xl font-bold shadow-xl z-10">
 									IM
 								</div>
 
@@ -56,10 +56,10 @@ export const CommunitySection = () => {
 										<div
 											key={benefit.label}
 											style={{ left: `${x}%`, top: `${y}%` }}
-											className="absolute -translate-x-1/2 -translate-y-1/2 w-16 h-16 rounded-xl bg-white dark:bg-neutral-900 shadow-lg flex flex-col items-center justify-center"
+											className="absolute -translate-x-1/2 -translate-y-1/2 w-14 h-14 sm:w-16 sm:h-16 rounded-xl bg-white dark:bg-neutral-900 shadow-lg flex flex-col items-center justify-center"
 										>
-											<Icon className="w-5 h-5 text-teal-600" />
-											<span className="text-[11px] text-gray-500 dark:text-gray-400 mt-1">
+											<Icon className="w-4 h-4 sm:w-5 sm:h-5 text-teal-600" />
+											<span className="text-[10px] sm:text-[11px] text-gray-500 dark:text-gray-400 mt-1">
 												{benefit.label.split(' ')[0]}
 											</span>
 										</div>
@@ -70,11 +70,11 @@ export const CommunitySection = () => {
 					</div>
 
 					{/* RIGHT : CONTENT */}
-					<div>
-						<h3 className="text-4xl font-bold text-gray-900 dark:text-white mb-4">
+					<div className="order-1 lg:order-2 text-center lg:text-left">
+						<h3 className="text-3xl sm:text-4xl font-bold text-gray-900 dark:text-white mb-4">
 							Get the Insider Advantage
 						</h3>
-						<p className="text-lg text-gray-600 dark:text-gray-400 mb-8">
+						<p className="text-base sm:text-lg text-gray-600 dark:text-gray-400 mb-8 max-w-xl mx-auto lg:mx-0">
 							Be the first to know. Get early alerts on properties, deals, and
 							market shifts.
 						</p>

@@ -1,6 +1,4 @@
-// 🔥 SINGLE SOURCE OF TRUTH
-// 👉 Aaj dummy data
-// 👉 Kal API se replace ho jaayega (same structure)
+
 
 export const properties = [
 	{

@@ -16,14 +16,14 @@ export const CompanyTieUpsSection = () => {
 	const [isPaused, setIsPaused] = useState(false);
 
 	return (
-		<section className="py-16 bg-slate-50 dark:bg-neutral-950 overflow-hidden">
-			<div className="max-w-7xl mx-auto px-5">
+		<section className="py-12 sm:py-16 bg-slate-50 dark:bg-neutral-950 overflow-hidden">
+			<div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-5">
 				{/* HEADER */}
-				<div className="text-center mb-12">
-					<h2 className="text-3xl md:text-4xl font-bold mb-4 text-gray-900 dark:text-white">
+				<div className="text-center mb-8 sm:mb-12">
+					<h2 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-3 sm:mb-4 text-gray-900 dark:text-white">
 						Trusted By Leading Companies
 					</h2>
-					<p className="text-lg text-gray-600 dark:text-gray-400 max-w-xl mx-auto">
+					<p className="text-base sm:text-lg text-gray-600 dark:text-gray-400 max-w-xl mx-auto">
 						We are a preferred rental partner for corporations in Noida &
 						Greater Noida, helping their employees find verified homes,
 						hassle-free.
@@ -40,25 +40,28 @@ export const CompanyTieUpsSection = () => {
 				<div className="flex overflow-hidden">
 					<div
 						className={cn(
-							'flex items-center gap-16 animate-marquee',
-							isPaused && 'pause-animation'
+							'flex items-center gap-8 sm:gap-12 lg:gap-16 animate-marquee',
+							isPaused && 'pause-animation',
 						)}
 					>
 						{[...companies, ...companies].map((company, index) => (
 							<div
 								key={`${company.name}-${index}`}
 								className="
-									w-40 h-24 flex-shrink-0
+									w-28 h-20
+									sm:w-36 sm:h-22
+									lg:w-40 lg:h-24
+									flex-shrink-0
 									bg-white dark:bg-neutral-900
 									border border-gray-200 dark:border-white/10
 									rounded-xl shadow-sm
 									flex flex-col items-center justify-center
 								"
 							>
-								<div className="text-2xl font-bold text-gray-400 dark:text-gray-500">
+								<div className="text-xl sm:text-2xl font-bold text-gray-400 dark:text-gray-500">
 									{company.logo}
 								</div>
-								<div className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+								<div className="text-[10px] sm:text-xs text-gray-500 dark:text-gray-400 mt-1">
 									{company.name}
 								</div>
 							</div>
@@ -67,8 +70,8 @@ export const CompanyTieUpsSection = () => {
 				</div>
 
 				{/* FADE EDGES */}
-				<div className="pointer-events-none absolute left-0 top-0 bottom-0 w-28 bg-gradient-to-r from-slate-50 dark:from-neutral-950 to-transparent" />
-				<div className="pointer-events-none absolute right-0 top-0 bottom-0 w-28 bg-gradient-to-l from-slate-50 dark:from-neutral-950 to-transparent" />
+				<div className="pointer-events-none absolute left-0 top-0 bottom-0 w-16 sm:w-24 lg:w-28 bg-gradient-to-r from-slate-50 dark:from-neutral-950 to-transparent" />
+				<div className="pointer-events-none absolute right-0 top-0 bottom-0 w-16 sm:w-24 lg:w-28 bg-gradient-to-l from-slate-50 dark:from-neutral-950 to-transparent" />
 			</div>
 
 			{/* TAILWIND ANIMATION */}
