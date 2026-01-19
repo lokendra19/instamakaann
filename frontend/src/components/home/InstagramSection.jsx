@@ -5,38 +5,33 @@ import { Instagram, Play } from 'lucide-react';
 const instagramPosts = [
 	{
 		id: 1,
-		image:
-			'https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=300&h=300&fit=crop',
+		postUrl:
+			'https://www.instagram.com/reel/DTf0gCZAWLu/?igsh=bGFpbzJnaWR3MGc2',
+		thumbnail:
+			'https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=600&h=600&fit=crop',
 		hasVideo: true,
 	},
 	{
 		id: 2,
-		image:
-			'https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?w=300&h=300&fit=crop',
+		postUrl:
+			'https://www.instagram.com/reel/DTdIxC4AYyj/?igsh=NjMzdHdoNTNkdWxp',
+		thumbnail:
+			'https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?w=600&h=600&fit=crop',
 		hasVideo: false,
 	},
 	{
 		id: 3,
-		image:
-			'https://images.unsplash.com/photo-1560185007-cde436f6a4d0?w=300&h=300&fit=crop',
+		postUrl:
+			'https://www.instagram.com/reel/DTVINEyASeL/?igsh=MTZiM3o3bjVsNTY2cA==',
+		thumbnail:
+			'https://images.unsplash.com/photo-1560185007-cde436f6a4d0?w=600&h=600&fit=crop',
 		hasVideo: true,
 	},
 	{
 		id: 4,
-		image:
-			'https://images.unsplash.com/photo-1493809842364-78817add7ffb?w=300&h=300&fit=crop',
-		hasVideo: false,
-	},
-	{
-		id: 5,
-		image:
-			'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=300&h=300&fit=crop',
-		hasVideo: true,
-	},
-	{
-		id: 6,
-		image:
-			'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=300&h=300&fit=crop',
+		postUrl: 'https://www.instagram.com/p/DTRiimeE_i-/?igsh=dW52aXFsdm05dWdi',
+		thumbnail:
+			'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=600&h=600&fit=crop',
 		hasVideo: false,
 	},
 ];
@@ -56,12 +51,12 @@ export const InstagramSection = () => {
 					</p>
 				</div>
 
-				{/* INSTAGRAM GRID */}
-				<div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4">
+				{/* INSTAGRAM GRID – 4 POSTS */}
+				<div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-4">
 					{instagramPosts.map((post) => (
 						<a
 							key={post.id}
-							href="https://instagram.com/instamakaan"
+							href={post.postUrl}
 							target="_blank"
 							rel="noopener noreferrer"
 							className="
@@ -71,7 +66,7 @@ export const InstagramSection = () => {
 							"
 						>
 							<img
-								src={post.image}
+								src={post.thumbnail}
 								alt="Instagram post"
 								className="
 									w-full h-full object-cover

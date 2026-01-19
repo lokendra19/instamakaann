@@ -18,17 +18,29 @@ const navigationLinks = [
 ];
 
 const serviceLinks = [
-	{ name: 'Managed Rental Service', path: '/properties?type=pre-occupied' },
-	{ name: '15-Day Brokerage', path: '/properties?type=rent' },
-	{ name: 'Buy Property', path: '/properties?type=buy' },
+	{ name: 'Rent', path: '#' },
+	{ name: 'Pre-Occupied', path: '#' },
+	{ name: 'Buy', path: '#' },
 	{ name: 'Blog', path: '/blog' },
 	{ name: 'FAQs', path: '/faq' },
 ];
 
 const socialLinks = [
-	{ name: 'Facebook', icon: Facebook, url: '#' },
-	{ name: 'Instagram', icon: Instagram, url: '#' },
-	{ name: 'LinkedIn', icon: Linkedin, url: '#' },
+	{
+		name: 'Facebook',
+		icon: Facebook,
+		url: 'https://www.facebook.com/share/1DTjmoeU8R/',
+	},
+	{
+		name: 'Instagram',
+		icon: Instagram,
+		url: 'https://instagram.com/instamakaan',
+	},
+	{
+		name: 'LinkedIn',
+		icon: Linkedin,
+		url: 'https://www.linkedin.com/company/instamakaan/',
+	},
 ];
 
 export const Footer = () => {
@@ -120,18 +132,19 @@ export const Footer = () => {
 						<ul className="space-y-4">
 							<li className="flex items-center gap-3 text-sm text-slate-600 dark:text-slate-400">
 								<Phone className="w-4 h-4" />
-								+91 99999 00000
+								+91 9771034916
 							</li>
 							<li className="flex items-center gap-3 text-sm text-slate-600 dark:text-slate-400">
 								<Mail className="w-4 h-4" />
-								contact@instamakaan.com
+								info@instamakaan.com
 							</li>
 							<li className="flex items-start gap-3 text-sm text-slate-600 dark:text-slate-400">
 								<MapPin className="w-4 h-4 mt-0.5" />
 								<span>
-									Office Address, Sector 62,
+									Tower T2, Flat B809, Tech Zone 4, Plot 17, Amrapali Dream
+									Valley,
 									<br />
-									Noida, UP
+									Greater Noida, Uttar Pradesh 201318
 								</span>
 							</li>
 						</ul>

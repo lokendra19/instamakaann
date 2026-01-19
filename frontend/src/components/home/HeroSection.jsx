@@ -1,7 +1,18 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Search, MapPin, ChevronDown } from 'lucide-react';
+import { Search, MapPin, ChevronDown, X } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 
-/* ---------- CUSTOM DROPDOWN ---------- */
+/* ---------- AUTOCOMPLETE (TEMP STATIC) ---------- */
+const suggestionsList = [
+	'Sector 62 Noida',
+	'Sector 137 Noida',
+	'Alpha 1 Greater Noida',
+	'Pari Chowk',
+	'Knowledge Park',
+	'Noida Extension',
+];
+
+/* ---------- CLEAN DROPDOWN ---------- */
 const Dropdown = ({ icon: Icon, label, value, setValue, options }) => {
 	const [open, setOpen] = useState(false);
 	const ref = useRef(null);
@@ -18,15 +29,7 @@ const Dropdown = ({ icon: Icon, label, value, setValue, options }) => {
 		<div ref={ref} className="relative w-full sm:w-auto">
 			<button
 				onClick={() => setOpen(!open)}
-				className="
-					w-full h-12 sm:h-11 px-3 flex items-center justify-between
-					rounded-xl border
-					bg-white dark:bg-[#0b1220]
-					border-slate-300/50 dark:border-white/10
-					text-slate-900 dark:text-slate-100
-					text-sm transition-all
-					hover:shadow-md
-				"
+				className="w-full h-12 sm:h-11 px-3 flex items-center justify-between rounded-xl border bg-white dark:bg-[#0b1220] text-sm"
 			>
 				<div className="flex items-center gap-2">
 					{Icon && <Icon className="w-4 h-4 text-slate-400" />}
@@ -34,76 +37,43 @@ const Dropdown = ({ icon: Icon, label, value, setValue, options }) => {
 						{value || label}
 					</span>
 				</div>
-				<ChevronDown
-					className={`w-4 h-4 transition-transform ${open ? 'rotate-180' : ''}`}
-				/>
+				<ChevronDown className={`w-4 h-4 ${open ? 'rotate-180' : ''}`} />
 			</button>
 
-			<div
-				className={`
-					absolute left-0 right-0 mt-2 z-50
-					rounded-xl overflow-hidden
-					bg-white dark:bg-[#0b1220]
-					border border-slate-200 dark:border-white/10
-					shadow-xl
-					max-h-[180px] overflow-y-auto
-					transition-all duration-200
-					${open ? 'opacity-100 scale-100' : 'opacity-0 scale-95 pointer-events-none'}
-				`}
-			>
-				{options.map((opt) => (
-					<div
-						key={opt}
-						onClick={() => {
-							setValue(opt);
-							setOpen(false);
-						}}
-						className="
-							px-4 py-3 cursor-pointer text-sm
-							text-slate-800 dark:text-slate-200
-							hover:bg-slate-100 dark:hover:bg-white/10
-						"
-					>
-						{opt}
-					</div>
-				))}
-			</div>
+			{open && (
+				<div className="absolute left-0 right-0 mt-2 z-50 bg-white dark:bg-[#0b1220] border rounded-xl shadow max-h-[180px] overflow-y-auto">
+					{options.map((o) => (
+						<div
+							key={o}
+							onClick={() => {
+								setValue(o);
+								setOpen(false);
+							}}
+							className="px-4 py-3 text-sm hover:bg-slate-100 dark:hover:bg-white/10 cursor-pointer"
+						>
+							{o}
+						</div>
+					))}
+				</div>
+			)}
 		</div>
 	);
 };
 
 /* ---------- HERO SECTION ---------- */
 export const HeroSection = () => {
+	const navigate = useNavigate();
+
 	const [activeTab, setActiveTab] = useState('rent');
-
-	const [city, setCity] = useState('');
-	const [budget, setBudget] = useState('');
-	const [bhk, setBhk] = useState('');
-
+	const [city, setCity] = useState('Noida');
 	const [searchText, setSearchText] = useState('');
-	const [rentType, setRentType] = useState('Full House');
-	const [buyType, setBuyType] = useState('Full House');
-	const [propertyStatus, setPropertyStatus] = useState('');
-	const [preType, setPreType] = useState('Rent');
-	const [commercialType, setCommercialType] = useState('');
+	const [showAuto, setShowAuto] = useState(false);
 
-	const tabText = {
-		rent: {
-			title: 'Find Your Rental ',
-			highlight: 'Sukoon.',
-			subtitle: 'Calm, friendly, aspirational living spaces for your comfort.',
-		},
-		buy: {
-			title: 'Discover Your Future ',
-			highlight: 'Property.',
-			subtitle: 'Verified listings and expert guidance for buyers.',
-		},
-		pre: {
-			title: 'Managed Homes for ',
-			highlight: 'Living.',
-			subtitle: 'Premium pre-occupied homes with full service.',
-		},
-	};
+	const [bhk, setBhk] = useState('');
+	const [budget, setBudget] = useState('');
+	const [homeType, setHomeType] = useState('');
+	const [unitType, setUnitType] = useState('');
+	const [moveIn, setMoveIn] = useState('');
 
 	const bgImages = {
 		rent: '/images/hero-rent.jpg',
@@ -111,28 +81,47 @@ export const HeroSection = () => {
 		pre: '/images/hero-pre.jpg',
 	};
 
+	const handleSearch = async () => {
+		const params = new URLSearchParams({
+			tab: activeTab,
+			city,
+			search: searchText,
+			bhk,
+			budget,
+			homeType,
+			unitType,
+			moveIn,
+		});
+
+		navigate(`/search?${params.toString()}`);
+
+		try {
+			await fetch(
+				`${process.env.REACT_APP_BACKEND_URL}/api/properties?${params.toString()}`,
+			);
+		} catch (e) {
+			console.error(e);
+		}
+	};
+
 	return (
-		<section className="relative min-h-[90vh] sm:min-h-screen flex items-center justify-center overflow-hidden -mt-14">
+		<section className="relative min-h-[90vh] sm:min-h-screen overflow-hidden -mt-14">
 			<div
 				className="absolute inset-0 bg-cover bg-center scale-105"
 				style={{ backgroundImage: `url('${bgImages[activeTab]}')` }}
 			/>
-
 			<div className="absolute inset-0 bg-gradient-to-b from-white/70 via-white/60 to-white/80 dark:from-[#0b1220]/90 dark:via-[#0b1220]/85 dark:to-[#0b1220]/95" />
 
 			{/* TABS */}
-			<div className="absolute top-20 sm:top-28 left-1/2 -translate-x-1/2 z-20 px-2">
-				<div className="flex bg-white/90 dark:bg-[#0b1220]/80 backdrop-blur-xl rounded-full p-1 border border-slate-200/50 dark:border-white/10 shadow-lg">
+			<div className="absolute top-20 sm:top-28 left-1/2 -translate-x-1/2 z-20">
+				<div className="flex bg-white/90 dark:bg-[#0b1220]/80 rounded-full p-1">
 					{['rent', 'pre', 'buy'].map((tab) => (
 						<button
 							key={tab}
 							onClick={() => setActiveTab(tab)}
-							className={`px-4 sm:px-5 py-2 rounded-full text-sm font-medium transition-all
-								${
-									activeTab === tab
-										? 'bg-teal-600 text-white shadow'
-										: 'text-slate-700 dark:text-slate-300'
-								}`}
+							className={`px-5 py-2 rounded-full text-sm ${
+								activeTab === tab ? 'bg-teal-600 text-white' : 'text-slate-700'
+							}`}
 						>
 							{tab === 'rent' ? 'Rent' : tab === 'pre' ? 'Pre-Occupied' : 'Buy'}
 						</button>
@@ -140,119 +129,146 @@ export const HeroSection = () => {
 				</div>
 			</div>
 
-			{/* CONTENT */}
-			<div className="relative z-10 text-center max-w-6xl px-4 mt-20 sm:mt-0">
+			{/* HERO TEXT — CENTER */}
+			<div className="relative z-10 text-center w-full max-w-6xl mx-auto px-4 pt-48">
 				<h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-slate-900 dark:text-white">
-					{tabText[activeTab].title}
-					<span className="text-teal-600 dark:text-teal-400">
-						{tabText[activeTab].highlight}
-					</span>
+					{activeTab === 'rent' && (
+						<>
+							Find Your Rental{' '}
+							<span className="text-teal-600 dark:text-teal-400">Sukoon.</span>
+						</>
+					)}
+					{activeTab === 'buy' && (
+						<>
+							Discover Your Future{' '}
+							<span className="text-teal-600 dark:text-teal-400">
+								Property.
+							</span>
+						</>
+					)}
+					{activeTab === 'pre' && (
+						<>
+							Managed Homes for{' '}
+							<span className="text-teal-600 dark:text-teal-400">Living.</span>
+						</>
+					)}
 				</h1>
 
 				<p className="mt-3 sm:mt-4 text-slate-600 dark:text-slate-300">
-					{tabText[activeTab].subtitle}
+					{activeTab === 'rent' &&
+						'Calm, friendly, aspirational living spaces for your comfort.'}
+					{activeTab === 'buy' &&
+						'Verified listings and expert guidance for buyers.'}
+					{activeTab === 'pre' &&
+						'Premium pre-occupied homes with full service.'}
 				</p>
+			</div>
 
-				{/* SEARCH BAR */}
-				<div className="mt-8 sm:mt-10 bg-white/90 dark:bg-[#0b1220]/85 backdrop-blur-xl shadow-2xl rounded-2xl px-4 sm:px-6 py-6 flex flex-col md:flex-row gap-4 items-stretch md:items-center border border-slate-200/50 dark:border-white/10 max-w-6xl mx-auto">
-					{/* RADIO BUTTONS */}
-					{activeTab === 'rent' && (
-						<div className="flex flex-wrap gap-4 text-sm text-slate-700 dark:text-slate-200">
-							{['Full House', 'Flatmate'].map((o) => (
-								<label key={o} className="flex items-center gap-2">
-									<input
-										type="radio"
-										checked={rentType === o}
-										onChange={() => setRentType(o)}
-									/>
-									{o}
-								</label>
-							))}
-						</div>
-					)}
-
-					{activeTab === 'buy' && (
-						<div className="flex flex-wrap gap-4 text-sm text-slate-700 dark:text-slate-200">
-							{['Full House', 'Land / Plot'].map((o) => (
-								<label key={o} className="flex items-center gap-2">
-									<input
-										type="radio"
-										checked={buyType === o}
-										onChange={() => setBuyType(o)}
-									/>
-									{o}
-								</label>
-							))}
-						</div>
-					)}
-
-					{activeTab === 'pre' && (
-						<div className="flex flex-wrap gap-4 text-sm text-slate-700 dark:text-slate-200">
-							{['Rent', 'Buy'].map((o) => (
-								<label key={o} className="flex items-center gap-2">
-									<input
-										type="radio"
-										checked={preType === o}
-										onChange={() => setPreType(o)}
-									/>
-									{o}
-								</label>
-							))}
-						</div>
-					)}
-
+			{/* SEARCH BAR — CENTER + FULL FILTERS */}
+			<div className="relative z-10 mt-16 w-full max-w-6xl mx-auto px-4">
+				<div className="bg-white/90 dark:bg-[#0b1220]/85 rounded-2xl shadow-2xl p-4 flex flex-col md:flex-row gap-3">
 					<Dropdown
 						icon={MapPin}
 						label="City"
 						value={city}
 						setValue={setCity}
-						options={['Noida', 'Greater Noida']}
+						options={['Noida', 'Greater Noida', 'Noida Extension', 'Ghaziabad']}
 					/>
 
-					<input
-						value={searchText}
-						onChange={(e) => setSearchText(e.target.value)}
-						placeholder="Search localities or landmarks"
-						className="h-12 sm:h-11 px-4 rounded-xl border bg-white dark:bg-[#0b1220] text-sm w-full md:w-72"
-					/>
-
-					{activeTab === 'rent' && (
-						<Dropdown
-							label="BHK Type"
-							value={bhk}
-							setValue={setBhk}
-							options={['1 BHK', '2 BHK', '3 BHK', '4 BHK']}
+					{/* SEARCH */}
+					<div className="relative flex-1">
+						<input
+							value={searchText}
+							onChange={(e) => {
+								setSearchText(e.target.value);
+								setShowAuto(true);
+							}}
+							onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
+							placeholder="Search locality / society / landmark"
+							className="w-full h-11 px-4 rounded-xl border text-sm bg-white dark:bg-[#0b1220] text-slate-900 dark:text-slate-100 border-slate-300/50 dark:border-white/10"
 						/>
-					)}
 
-					{activeTab === 'buy' && (
-						<Dropdown
-							label="Property Status"
-							value={propertyStatus}
-							setValue={setPropertyStatus}
-							options={['Ready to Move', 'Under Construction']}
-						/>
-					)}
+						{showAuto && searchText && (
+							<div className="absolute left-0 right-0 mt-1 z-50 bg-white dark:bg-[#0b1220] border rounded-xl shadow-xl">
+								{suggestionsList
+									.filter((s) =>
+										s.toLowerCase().includes(searchText.toLowerCase()),
+									)
+									.slice(0, 5)
+									.map((s) => (
+										<div
+											key={s}
+											onClick={() => {
+												setSearchText(s);
+												setShowAuto(false);
+											}}
+											className="px-4 py-2 text-sm cursor-pointer hover:bg-slate-100 dark:hover:bg-white/10"
+										>
+											{s}
+										</div>
+									))}
+							</div>
+						)}
+					</div>
 
-					{activeTab === 'pre' && (
-						<Dropdown
-							label="Property Type"
-							value={commercialType}
-							setValue={setCommercialType}
-							options={[
-								'Office Space',
-								'Co-Working',
-								'Shop',
-								'Showroom',
-								'Industrial Building',
-								'Industrial Shed',
-								'Godown / Warehouse',
-								'Other Business',
-							]}
-						/>
-					)}
+					{/* DESKTOP FILTERS — RESTORED */}
+					<div className="hidden md:flex gap-3">
+						{activeTab === 'rent' && (
+							<>
+								<Dropdown
+									label="Home Type"
+									value={homeType}
+									setValue={setHomeType}
+									options={['Full House', 'Flatmates', 'PG / Hostel']}
+								/>
+								<Dropdown
+									label="BHK"
+									value={bhk}
+									setValue={setBhk}
+									options={['1RK', '1BHK', '2BHK', '3BHK', '4BHK+']}
+								/>
+							</>
+						)}
 
-					<button className="h-12 sm:h-11 px-8 bg-yellow-400 hover:bg-yellow-500 text-black rounded-xl font-semibold flex items-center justify-center gap-2 shadow-md">
+						{activeTab === 'buy' && (
+							<>
+								<Dropdown
+									label="Budget"
+									value={budget}
+									setValue={setBudget}
+									options={['<30L', '30–50L', '50–80L', '80L–1.2Cr', '1.2Cr+']}
+								/>
+								<Dropdown
+									label="BHK"
+									value={bhk}
+									setValue={setBhk}
+									options={['1', '2', '3', '4+']}
+								/>
+							</>
+						)}
+
+						{activeTab === 'pre' && (
+							<>
+								<Dropdown
+									label="Unit Type"
+									value={unitType}
+									setValue={setUnitType}
+									options={['Private Room', 'Shared Room', 'Entire Flat']}
+								/>
+								<Dropdown
+									label="Move-in"
+									value={moveIn}
+									setValue={setMoveIn}
+									options={['Immediate', 'This Week', 'This Month']}
+								/>
+							</>
+						)}
+					</div>
+
+					<button
+						onClick={handleSearch}
+						className="h-11 px-8 bg-teal-600 text-white rounded-xl flex items-center gap-2"
+					>
 						<Search className="w-4 h-4" />
 						Search
 					</button>
