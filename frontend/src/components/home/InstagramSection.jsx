@@ -41,63 +41,73 @@ export const InstagramSection = () => {
 		<section className="py-16 md:py-24 bg-white dark:bg-neutral-950">
 			<div className="container-custom">
 				{/* HEADER */}
-				<div className="text-center mb-12 md:mb-16">
+				<div className="text-center mb-12 md:mb-16 animate-fade-up">
 					<h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-4">
 						VISIT OUR INSTAGRAM
 					</h2>
 					<p className="text-base md:text-lg text-gray-600 dark:text-gray-400 max-w-xl mx-auto">
-						Follow our journey, see behind-the-scenes content, and get a
-						real-time look at our newest properties.
+						Follow our journey, see behind-the-scenes content, and explore our
+						latest properties.
 					</p>
 				</div>
 
-				{/* INSTAGRAM GRID – 4 POSTS */}
-				<div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-					{instagramPosts.map((post) => (
+				{/* GRID */}
+				<div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+					{instagramPosts.map((post, i) => (
 						<a
 							key={post.id}
 							href={post.postUrl}
 							target="_blank"
 							rel="noopener noreferrer"
+							style={{ animationDelay: `${i * 120}ms` }}
 							className="
-								relative aspect-square rounded-xl overflow-hidden
-								group cursor-pointer
-								bg-gray-100 dark:bg-neutral-900
-							"
+                group relative aspect-square rounded-xl overflow-hidden
+                bg-gray-100 dark:bg-neutral-900
+                shadow-md dark:shadow-none
+                transition-all duration-500
+                hover:scale-[1.04]
+                hover:shadow-xl
+                dark:hover:shadow-[0_0_30px_rgba(45,212,191,0.25)]
+                animate-fade-up
+              "
 						>
 							<img
 								src={post.thumbnail}
 								alt="Instagram post"
 								className="
-									w-full h-full object-cover
-									transition-transform duration-300
-									group-hover:scale-110
-								"
+                  w-full h-full object-cover
+                  transition-transform duration-500
+                  group-hover:scale-110
+                "
 							/>
 
 							{/* Overlay */}
 							<div
 								className="
-									absolute inset-0
-									bg-black/0 group-hover:bg-black/40
-									transition-colors
-									flex items-center justify-center
-								"
+                  absolute inset-0
+                  bg-black/0 group-hover:bg-black/40
+                  transition-colors duration-300
+                  flex items-center justify-center
+                "
 							>
-								{/* Video Icon */}
+								{/* Video Badge */}
 								{post.hasVideo && (
-									<div className="absolute top-2 right-2 w-6 h-6 rounded bg-black/60 flex items-center justify-center">
-										<Play className="w-3 h-3 text-white" fill="currentColor" />
+									<div className="absolute top-2 right-2 w-7 h-7 rounded-md bg-black/70 flex items-center justify-center">
+										<Play
+											className="w-3.5 h-3.5 text-white"
+											fill="currentColor"
+										/>
 									</div>
 								)}
 
 								{/* Instagram Icon */}
 								<Instagram
 									className="
-										w-8 h-8 text-white
-										opacity-0 group-hover:opacity-100
-										transition-opacity
-									"
+                    w-8 h-8 text-white
+                    opacity-0 group-hover:opacity-100
+                    scale-75 group-hover:scale-100
+                    transition-all duration-300
+                  "
 								/>
 							</div>
 						</a>
@@ -105,7 +115,7 @@ export const InstagramSection = () => {
 				</div>
 
 				{/* CTA */}
-				<div className="text-center mt-10">
+				<div className="text-center mt-10 animate-fade-up">
 					<Button variant="yellow" size="lg" asChild>
 						<a
 							href="https://instagram.com/instamakaan"
@@ -119,6 +129,30 @@ export const InstagramSection = () => {
 					</Button>
 				</div>
 			</div>
+
+			{/* SIMPLE ANIMATION CSS */}
+			<style>{`
+        @keyframes fadeUp {
+          from {
+            opacity: 0;
+            transform: translateY(24px);
+          }
+          to {
+            opacity: 1;
+            transform: translateY(0);
+          }
+        }
+        .animate-fade-up {
+          animation: fadeUp 0.7s ease-out both;
+        }
+
+        /* Mobile safety */
+        @media (max-width: 640px) {
+          .animate-fade-up {
+            animation-duration: 0.5s;
+          }
+        }
+      `}</style>
 		</section>
 	);
 };

@@ -14,15 +14,10 @@ export const PropertiesSection = () => {
 		const fetchProperties = async () => {
 			try {
 				const res = await fetch(`${BACKEND_URL}/api/properties/`);
-
-				if (!res.ok) {
-					throw new Error('Failed to load properties');
-				}
-
+				if (!res.ok) throw new Error('Failed to load properties');
 				const data = await res.json();
 				setProperties(data || []);
 			} catch (err) {
-				console.error(err);
 				setError('No properties found');
 			} finally {
 				setLoading(false);
@@ -34,33 +29,30 @@ export const PropertiesSection = () => {
 
 	if (loading) {
 		return (
-			<section className="py-20 text-center bg-white dark:bg-neutral-950">
-				<p className="text-gray-600 dark:text-gray-400">
-					Loading properties...
-				</p>
+			<section className="py-20 bg-[#0b1220] text-center">
+				<p className="text-slate-400">Loading properties...</p>
 			</section>
 		);
 	}
 
 	if (error || properties.length === 0) {
 		return (
-			<section className="py-20 text-center bg-white dark:bg-neutral-950">
-				<p className="text-gray-600 dark:text-gray-400">
-					No properties available
-				</p>
+			<section className="py-20 bg-[#0b1220] text-center">
+				<p className="text-slate-400">No properties available</p>
 			</section>
 		);
 	}
 
 	return (
-		<section className="py-20 bg-white dark:bg-neutral-950">
+		<section className="py-20 bg-[#0b1220]">
 			<div className="container-custom">
+				{/* HEADER */}
 				<div className="flex items-center justify-between mb-10">
 					<div>
-						<h2 className="text-2xl font-semibold text-teal-700 dark:text-teal-400">
-							Last Search / Recommended
+						<h2 className="text-2xl md:text-3xl font-bold text-white">
+							Recommended Properties
 						</h2>
-						<p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
+						<p className="text-sm text-slate-400 mt-1">
 							Properties matching your preferences
 						</p>
 					</div>
@@ -68,10 +60,10 @@ export const PropertiesSection = () => {
 					<Link
 						to="/all-properties"
 						className="
-							border border-teal-600
-							text-teal-600 dark:text-teal-400
-							px-4 py-2 rounded-lg text-sm
-							hover:bg-teal-50 dark:hover:bg-white/10
+							text-sm px-4 py-2 rounded-lg
+							border border-teal-500/40
+							text-teal-400
+							hover:bg-teal-500/10
 							transition
 						"
 					>
@@ -79,6 +71,7 @@ export const PropertiesSection = () => {
 					</Link>
 				</div>
 
+				{/* GRID */}
 				<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
 					{properties.slice(0, 4).map((property) => (
 						<PropertyCard key={property.id} property={property} />

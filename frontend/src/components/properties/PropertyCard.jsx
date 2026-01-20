@@ -11,22 +11,33 @@ export const PropertyCard = ({ property }) => {
 	return (
 		<div
 			className="
+				group relative
 				bg-white dark:bg-neutral-900
-				rounded-2xl shadow-md overflow-hidden
+				rounded-2xl overflow-hidden
 				border border-gray-200 dark:border-white/10
+				shadow-sm
+				transition-all duration-300 ease-out
+				hover:-translate-y-1 hover:shadow-xl
 			"
 		>
 			{/* IMAGE */}
-			<div className="relative h-48">
+			<div className="relative h-48 overflow-hidden">
 				{image ? (
 					<img
 						src={image}
 						alt={property.title}
-						className="w-full h-full object-cover"
+						className="
+							w-full h-full object-cover
+							transition-transform duration-500
+							group-hover:scale-105
+						"
 					/>
 				) : (
 					<div className="w-full h-full bg-gray-200 dark:bg-neutral-800" />
 				)}
+
+				{/* SOFT OVERLAY */}
+				<div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors" />
 
 				{/* BUY / RENT BADGE */}
 				<span
@@ -43,14 +54,14 @@ export const PropertyCard = ({ property }) => {
 			</div>
 
 			{/* CONTENT */}
-			<div className="p-4 bg-white dark:bg-neutral-900">
-				<h3 className="font-semibold text-gray-900 dark:text-white">
+			<div className="p-4">
+				<h3 className="font-semibold text-gray-900 dark:text-white line-clamp-1">
 					{property.title}
 				</h3>
 
-				<p className="text-sm text-gray-500 dark:text-gray-400 flex items-center gap-1">
+				<p className="text-sm text-gray-500 dark:text-gray-400 flex items-center gap-1 mt-1">
 					<MapPin className="w-4 h-4 text-teal-500" />
-					{property.location}
+					<span className="line-clamp-1">{property.location}</span>
 				</p>
 
 				<div className="flex justify-between text-xs text-gray-500 dark:text-gray-400 mt-3">
@@ -76,7 +87,7 @@ export const PropertyCard = ({ property }) => {
 								bg-teal-600 hover:bg-teal-700
 								text-white px-4 py-2
 								rounded-lg text-sm
-								transition
+								transition-colors
 							"
 						>
 							View Details
@@ -84,6 +95,16 @@ export const PropertyCard = ({ property }) => {
 					</Link>
 				</div>
 			</div>
+
+			{/* GLOW EFFECT */}
+			<div
+				className="
+					pointer-events-none absolute inset-0
+					opacity-0 group-hover:opacity-100
+					transition-opacity duration-300
+					bg-gradient-to-br from-teal-400/10 via-transparent to-yellow-400/10
+				"
+			/>
 		</div>
 	);
 };
