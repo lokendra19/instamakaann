@@ -12,7 +12,7 @@ const suggestionsList = [
 	'Noida Extension',
 ];
 
-/* ---------- CLEAN DROPDOWN ---------- */
+/* ---------- DROPDOWN ---------- */
 const Dropdown = ({ icon: Icon, label, value, setValue, options }) => {
 	const [open, setOpen] = useState(false);
 	const ref = useRef(null);
@@ -113,8 +113,8 @@ export const HeroSection = () => {
 			<div className="absolute inset-0 bg-gradient-to-b from-white/70 via-white/60 to-white/80 dark:from-[#0b1220]/90 dark:via-[#0b1220]/85 dark:to-[#0b1220]/95" />
 
 			{/* TABS */}
-			<div className="absolute top-20 sm:top-28 left-1/2 -translate-x-1/2 z-20">
-				<div className="flex bg-white/90 dark:bg-[#0b1220]/80 rounded-full p-1">
+			<div className="absolute top-28 sm:top-36 left-1/2 -translate-x-1/2 z-20">
+				<div className="flex bg-white/90 dark:bg-[#0b1220]/80 rounded-full p-1 mb-6 sm:mb-8">
 					{['rent', 'pre', 'buy'].map((tab) => (
 						<button
 							key={tab}
@@ -130,31 +130,41 @@ export const HeroSection = () => {
 			</div>
 
 			{/* HERO TEXT — CENTER */}
-			<div className="relative z-10 text-center w-full max-w-6xl mx-auto px-4 pt-48">
-				<h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-slate-900 dark:text-white">
+			<div className="relative z-10 text-center w-full max-w-6xl mx-auto px-4 pt-60">
+				<h1 className="text-5xl sm:text-6xl md:text-7xl font-bold text-teal-500 dark:text-white">
 					{activeTab === 'rent' && (
 						<>
 							Find Your Rental{' '}
-							<span className="text-teal-600 dark:text-teal-400">Sukoon.</span>
+							<span className="text-yellow-500 dark:text-teal-400 font-bold">
+								Sukoon.
+							</span>
 						</>
 					)}
 					{activeTab === 'buy' && (
-						<>
+						<span className="inline-block whitespace-nowrap">
 							Discover Your Future{' '}
-							<span className="text-teal-600 dark:text-teal-400">
+							<span className="text-yellow-500 dark:text-yellow-500 font-bold">
 								Property.
 							</span>
-						</>
+						</span>
 					)}
 					{activeTab === 'pre' && (
 						<>
 							Managed Homes for{' '}
-							<span className="text-teal-600 dark:text-teal-400">Living.</span>
+							<span className="text-yellow-500 dark:text-yellow-400 font-bold">
+								Living.
+							</span>
 						</>
 					)}
 				</h1>
-
-				<p className="mt-3 sm:mt-4 text-slate-600 dark:text-slate-300">
+				<p
+					className="
+									mt-4 sm:mt-6
+									text-lg sm:text-xl md:text-2xl
+									leading-relaxed
+									text-black-600 dark:text-slate-300
+									max-w-3xl mx-auto"
+				>
 					{activeTab === 'rent' &&
 						'Calm, friendly, aspirational living spaces for your comfort.'}
 					{activeTab === 'buy' &&
@@ -165,7 +175,7 @@ export const HeroSection = () => {
 			</div>
 
 			{/* SEARCH BAR — CENTER + FULL FILTERS */}
-			<div className="relative z-10 mt-16 w-full max-w-6xl mx-auto px-4">
+			<div className="relative z-10 mt-30 w-full max-w-6xl mx-auto px-4">
 				<div className="bg-white/90 dark:bg-[#0b1220]/85 rounded-2xl shadow-2xl p-4 flex flex-col md:flex-row gap-3">
 					<Dropdown
 						icon={MapPin}
@@ -211,7 +221,7 @@ export const HeroSection = () => {
 						)}
 					</div>
 
-					{/* DESKTOP FILTERS — RESTORED */}
+					{/* DESKTOP FILTERS */}
 					<div className="hidden md:flex gap-3">
 						{activeTab === 'rent' && (
 							<>

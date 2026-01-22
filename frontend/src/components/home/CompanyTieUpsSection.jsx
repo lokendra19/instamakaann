@@ -16,14 +16,19 @@ export const CompanyTieUpsSection = () => {
 	const [isPaused, setIsPaused] = useState(false);
 
 	return (
-		<section className="py-12 sm:py-16 bg-slate-50 dark:bg-neutral-950 overflow-hidden">
-			<div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-5">
+		// ❌ overflow-hidden REMOVED (bahar nikalne do)
+		<section className="py-12 sm:py-16 bg-slate-50 dark:bg-neutral-950">
+			{/* ❌ max-w-7xl mx-auto REMOVED */}
+			<div className="w-full px-6 sm:px-10 lg:px-16">
 				{/* HEADER */}
-				<div className="text-center mb-8 sm:mb-12">
-					<h2 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-3 sm:mb-4 text-gray-900 dark:text-white">
+				<div className="mb-8 sm:mb-12">
+					{/* ❌ text-center REMOVED */}
+					<h2 className="text-xl sm:text-3xl md:text-4xl font-extrabold mb-3 sm:mb-4 text-teal-900 dark:text-white text-center">
 						Trusted By Leading Companies
 					</h2>
-					<p className="text-base sm:text-lg text-gray-600 dark:text-gray-400 max-w-xl mx-auto">
+
+					{/* ❌ max-w-xl mx-auto REMOVED */}
+					<p className="text-base sm:text-lg text-teal-600 dark:text-gray-400 text-center">
 						We are a preferred rental partner for corporations in Noida &
 						Greater Noida, helping their employees find verified homes,
 						hassle-free.
@@ -31,13 +36,13 @@ export const CompanyTieUpsSection = () => {
 				</div>
 			</div>
 
-			{/* MARQUEE */}
+			{/* MARQUEE (SAME) */}
 			<div
-				className="relative"
+				className="relative w-full"
 				onMouseEnter={() => setIsPaused(true)}
 				onMouseLeave={() => setIsPaused(false)}
 			>
-				<div className="flex overflow-hidden">
+				<div className="flex">
 					<div
 						className={cn(
 							'flex items-center gap-8 sm:gap-12 lg:gap-16 animate-marquee',
@@ -48,15 +53,15 @@ export const CompanyTieUpsSection = () => {
 							<div
 								key={`${company.name}-${index}`}
 								className="
-									w-28 h-20
-									sm:w-36 sm:h-22
-									lg:w-40 lg:h-24
-									flex-shrink-0
-									bg-white dark:bg-neutral-900
-									border border-gray-200 dark:border-white/10
-									rounded-xl shadow-sm
-									flex flex-col items-center justify-center
-								"
+                  w-28 h-20
+                  sm:w-36 sm:h-22
+                  lg:w-40 lg:h-24
+                  flex-shrink-0
+                  bg-white dark:bg-neutral-900
+                  border border-gray-200 dark:border-white/10
+                  rounded-xl shadow-sm
+                  flex flex-col items-center justify-center
+                "
 							>
 								<div className="text-xl sm:text-2xl font-bold text-gray-400 dark:text-gray-500">
 									{company.logo}
@@ -69,12 +74,12 @@ export const CompanyTieUpsSection = () => {
 					</div>
 				</div>
 
-				{/* FADE EDGES */}
+				{/* FADE EDGES (SAME) */}
 				<div className="pointer-events-none absolute left-0 top-0 bottom-0 w-16 sm:w-24 lg:w-28 bg-gradient-to-r from-slate-50 dark:from-neutral-950 to-transparent" />
 				<div className="pointer-events-none absolute right-0 top-0 bottom-0 w-16 sm:w-24 lg:w-28 bg-gradient-to-l from-slate-50 dark:from-neutral-950 to-transparent" />
 			</div>
 
-			{/* TAILWIND ANIMATION */}
+			{/* ANIMATION (SAME) */}
 			<style jsx>{`
 				@keyframes marquee {
 					from {

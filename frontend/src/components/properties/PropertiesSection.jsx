@@ -29,30 +29,34 @@ export const PropertiesSection = () => {
 
 	if (loading) {
 		return (
-			<section className="py-20 bg-[#0b1220] text-center">
-				<p className="text-slate-400">Loading properties...</p>
+			<section className="py-20 bg-white dark:bg-[#0b1220] text-center">
+				<p className="text-slate-500 dark:text-slate-400">
+					Loading properties...
+				</p>
 			</section>
 		);
 	}
 
 	if (error || properties.length === 0) {
 		return (
-			<section className="py-20 bg-[#0b1220] text-center">
-				<p className="text-slate-400">No properties available</p>
+			<section className="py-20 bg-white dark:bg-[#0b1220] text-center">
+				<p className="text-slate-500 dark:text-slate-400">
+					No properties available
+				</p>
 			</section>
 		);
 	}
 
 	return (
-		<section className="py-20 bg-[#0b1220]">
+		<section className="py-20 bg-white dark:bg-[#0b1220]">
 			<div className="container-custom">
 				{/* HEADER */}
 				<div className="flex items-center justify-between mb-10">
 					<div>
-						<h2 className="text-2xl md:text-3xl font-bold text-white">
+						<h2 className="text-2xl md:text-3xl font-bold text-slate-900 dark:text-white">
 							Recommended Properties
 						</h2>
-						<p className="text-sm text-slate-400 mt-1">
+						<p className="text-sm text-slate-600 dark:text-slate-400 mt-1">
 							Properties matching your preferences
 						</p>
 					</div>
@@ -62,7 +66,7 @@ export const PropertiesSection = () => {
 						className="
 							text-sm px-4 py-2 rounded-lg
 							border border-teal-500/40
-							text-teal-400
+							text-teal-600 dark:text-teal-400
 							hover:bg-teal-500/10
 							transition
 						"

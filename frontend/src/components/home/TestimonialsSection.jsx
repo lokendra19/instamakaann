@@ -64,21 +64,21 @@ export const TestimonialsSection = () => {
 	const t = testimonials[currentIndex];
 
 	return (
-		<section className="py-20 bg-white dark:bg-[#0b1220] transition-colors duration-300">
-			<div className="container-custom">
-				{/* HEADER */}
-				<div className="text-center mb-14">
-					<h2 className="text-3xl md:text-4xl font-bold text-slate-900 dark:text-white mb-3">
+		<section className="relative w-screen min-h-screen bg-white dark:bg-[#0b1220] overflow-visible">
+			{/* FREE CANVAS */}
+			<div className="relative w-full h-full px-0">
+				{/* HEADER (FREE MOVE) */}
+				<div className="absolute top-[60px] left-1/2 -translate-x-1/2 text-center">
+					<h2 className="text-5xl font-extrabold text-dark-900 dark:text-white mb-3">
 						What Our Customers Say
 					</h2>
-
-					<p className="text-slate-600 dark:text-slate-400 max-w-xl mx-auto">
+					<p className="text-[16px] md:text-[25px] text-dark-600 dark:text-slate-400 max-w-3xl mx-auto mt-4">
 						Real stories from owners & tenants who trust InstaMakaan.
 					</p>
 				</div>
 
-				{/* CARD */}
-				<div className="relative max-w-6xl mx-auto">
+				{/* CARD WRAPPER (FREE POSITION) */}
+				<div className="absolute left-[120px] top-[180px] w-[90vw]">
 					{/* NAV */}
 					<button
 						onClick={() =>
@@ -86,9 +86,9 @@ export const TestimonialsSection = () => {
 								(p) => (p - 1 + testimonials.length) % testimonials.length,
 							)
 						}
-						className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-6 z-10 
-              w-10 h-10 rounded-full bg-black/10 dark:bg-white/10 
-              hover:bg-teal-500 text-white transition flex items-center justify-center"
+						className="absolute -left-[30px] top-1/2 -translate-y-1/2 z-10 
+            w-10 h-10 rounded-full bg-black/10 dark:bg-white/10 
+            hover:bg-teal-500 text-white transition flex items-center justify-center"
 					>
 						<ChevronLeft />
 					</button>
@@ -97,24 +97,25 @@ export const TestimonialsSection = () => {
 						onClick={() =>
 							setCurrentIndex((p) => (p + 1) % testimonials.length)
 						}
-						className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-6 z-10 
-              w-10 h-10 rounded-full bg-black/10 dark:bg-white/10 
-              hover:bg-teal-500 text-white transition flex items-center justify-center"
+						className="absolute -right-[30px] top-1/2 -translate-y-1/2 z-10 
+            w-10 h-10 rounded-full bg-black/10 dark:bg-white/10 
+            hover:bg-teal-500 text-white transition flex items-center justify-center"
 					>
 						<ChevronRight />
 					</button>
 
-					<Card className="bg-white dark:bg-[#0f172a] border border-black/10 dark:border-white/10 rounded-3xl overflow-hidden shadow-xl">
+					<Card className="bg-white dark:bg-[#0f172a] border border-black/10 dark:border-white/10 rounded-3xl shadow-xl">
 						<CardContent className="p-0">
-							<div className="grid md:grid-cols-2 min-h-[360px]">
+							{/* 🔓 CUSTOM GRID (NOT 50–50) */}
+							<div className="grid md:grid-cols-[45%_55%] min-h-[420px]">
 								{/* IMAGE SIDE */}
-								<div className="relative">
+								<div className="relative overflow-visible">
 									<img
 										src={t.videoThumbnail}
 										alt={t.name}
 										className="w-full h-full object-cover object-center"
 									/>
-									<div className="absolute inset-0 bg-black/20 dark:bg-black/40 flex items-center justify-center">
+									<div className="absolute inset-0 bg-black/30 flex items-center justify-center">
 										<div className="w-16 h-16 rounded-full bg-teal-500 flex items-center justify-center shadow-lg">
 											<Play className="ml-1" />
 										</div>
@@ -122,41 +123,26 @@ export const TestimonialsSection = () => {
 								</div>
 
 								{/* TEXT SIDE */}
-								<div className="relative p-8 flex flex-col justify-center overflow-hidden">
+								<div className="relative p-12 flex flex-col justify-center overflow-visible">
 									{/* GLOW */}
 									<div
 										className="absolute inset-0 bg-gradient-to-br 
-                        from-teal-300/20 via-transparent to-yellow-300/20 
-                        dark:from-teal-500/10 dark:via-transparent dark:to-yellow-500/10 
-                        blur-2xl pointer-events-none"
+                    from-teal-300/20 via-transparent to-yellow-300/20 
+                    blur-2xl pointer-events-none"
 									/>
 
-									{/* WAVE */}
-									<svg
-										className="absolute bottom-6 right-6 w-44 opacity-40 dark:opacity-30"
-										viewBox="0 0 400 200"
-										fill="none"
-									>
-										<path
-											d="M0 140 C120 60 240 220 400 120"
-											stroke="#2dd4bf"
-											strokeWidth="14"
-											strokeLinecap="round"
-										/>
-									</svg>
+									<Quote className="w-12 h-12 text-teal-500 mb-4" />
 
-									<Quote className="w-10 h-10 text-teal-500 mb-4" />
-
-									<h3 className="text-xl md:text-2xl font-semibold text-slate-900 dark:text-white mb-4">
+									<h3 className="text-2xl md:text-3xl font-semibold text-slate-900 dark:text-white mb-4">
 										{t.headline}
 									</h3>
 
-									<p className="text-slate-600 dark:text-slate-300 italic mb-6 leading-relaxed">
+									<p className="text-slate-600 dark:text-slate-300 italic mb-8 leading-relaxed">
 										“{t.quote}”
 									</p>
 
-									<div className="flex items-center gap-3">
-										<div className="w-10 h-10 rounded-full bg-teal-500/20 flex items-center justify-center">
+									<div className="flex items-center gap-4">
+										<div className="w-12 h-12 rounded-full bg-teal-500/20 flex items-center justify-center">
 											{t.type === 'owner' ? (
 												<Building2 className="text-teal-500" />
 											) : (
