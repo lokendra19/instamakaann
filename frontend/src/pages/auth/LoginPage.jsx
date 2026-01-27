@@ -26,11 +26,10 @@ const LoginPage = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
-  // 👇 only used when redirected from ProtectedRoute
+  // only used when redirected from ProtectedRoute
   const from = location.state?.from?.pathname;
 
   /* =========================================================
-     🔥 CRITICAL FIX #1
      Clear stale auth state when opening login page
      ========================================================= */
   useEffect(() => {
@@ -39,7 +38,6 @@ const LoginPage = () => {
   }, []);
 
   /* =========================================================
-     🔥 CRITICAL FIX #2
      Prevent auto-redirect while on /auth/login
      ========================================================= */
   useEffect(() => {
@@ -51,11 +49,9 @@ const LoginPage = () => {
     ) {
       redirectByRole(user.role);
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isAuthenticated, authLoading]);
 
   /* ================= ROLE BASED REDIRECT ================= */
-  // ONLY change is redirectByRole
 
 const redirectByRole = (role) => {
   switch (role) {
@@ -81,7 +77,7 @@ const redirectByRole = (role) => {
     setError('');
     setLoading(true);
 
-    console.log('LOGIN SUBMIT CLICKED'); // ✅ debug confirmation
+    console.log('LOGIN SUBMIT CLICKED'); 
 
     if (!email || !password) {
       setError('Please enter email and password');
@@ -217,7 +213,7 @@ const redirectByRole = (role) => {
               </Button>
             </form>
 
-{/* 🔐 Forgot Password */}
+{/*  Forgot Password */}
 <div className="mt-4 text-center">
   <Link
     to="/auth/forgot-password"
