@@ -19,7 +19,7 @@ router = APIRouter(
 )
 
 # -----------------------
-# EXISTING DASHBOARD APIs (UNCHANGED)
+# EXISTING DASHBOARD APIs 
 # -----------------------
 
 @router.get("/stats", response_model=DashboardStats)
@@ -62,7 +62,7 @@ async def update_cms_page(
         upsert=True
     )
 
-    # ✅ audit MUST happen before return
+    # audit MUST happen before return
     await log_audit(
         db,
         user_id=user["id"],
@@ -81,7 +81,7 @@ async def update_cms_page(
 @router.get("/public/cms/{page}", tags=["CMS"])
 @limiter.limit("30/minute")
 async def get_cms_page_public(
-    request: Request,      # ✅ REQUIRED for slowapi
+    request: Request,      
     page: str,
     db=Depends(get_db)
 ):
