@@ -114,7 +114,6 @@ const ReferPage = () => {
 			</section>
 
 			{/* Tabs + Content (Below Hero) */}
-			{/* Tabs + Content (Below Hero) */}
 			<section className="py-10 md:py-14 bg-background">
 				<div className="container-custom">
 					{/* Tabs */}
@@ -145,24 +144,54 @@ const ReferPage = () => {
 						</Tabs>
 					</div>
 
-					{/* Content Card */}
+					{/* ✅ Content Card */}
 					<Card className="bg-card border-0 shadow-elevated overflow-hidden max-w-10xl mx-auto rounded-3xl">
 						<CardContent className="p-0">
 							<div className="grid md:grid-cols-2">
-								{/* LEFT CONTENT */}
+								{/* ================= LEFT CONTENT ================= */}
 								<div
 									key={activeTab}
-									className="p-8 md:p-12 flex flex-col justify-center"
+									className="p-6 sm:p-8 md:p-12 flex flex-col justify-center"
 								>
-									<h2 className="text-2xl md:text-4xl font-extrabold text-foreground mb-6 leading-tight md:whitespace-nowrap">
+									{/* ✅ MOBILE HEADING ONLY (Heading first) */}
+									<h2 className="md:hidden text-center text-[18px] sm:text-2xl font-extrabold text-foreground mb-4 leading-snug">
 										{content.headline}
 									</h2>
 
-									<ul className="space-y-4 mb-10 md:text-3xl">
+									{/* ✅ MOBILE VIDEO (Video second) */}
+									<div className="md:hidden relative flex items-center justify-center mb-6">
+										{/* Glow */}
+										<div className="absolute -top-10 -left-10 w-56 h-56 bg-teal-400/25 blur-3xl rounded-full" />
+										<div className="absolute -bottom-10 -right-10 w-56 h-56 bg-yellow-400/25 blur-3xl rounded-full" />
+
+										<div className="relative w-full max-w-[240px] sm:max-w-[280px]">
+											<div className="absolute -inset-4 rounded-[32px] bg-gradient-to-br from-teal-400/30 via-cyan-300/15 to-yellow-400/25 blur-2xl opacity-90" />
+
+											<div className="relative z-10 rounded-[42px] overflow-hidden shadow-2xl border border-white/40 bg-transparent">
+												<video
+													key={activeTab}
+													src={content.video}
+													autoPlay
+													muted
+													loop
+													playsInline
+													className="w-full h-auto object-contain"
+												/>
+											</div>
+										</div>
+									</div>
+
+									{/* ✅ DESKTOP HEADING (Same as before) */}
+									<h2 className="hidden md:block text-2xl md:text-4xl font-extrabold text-foreground mb-6 leading-tight md:whitespace-nowrap">
+										{content.headline}
+									</h2>
+
+									{/* ✅ Remaining text (Bullets) */}
+									<ul className="space-y-4 mb-10">
 										{content.bullets.map((bullet, index) => (
 											<li key={index} className="flex items-start gap-3">
 												<Gift className="w-5 h-5 text-yellow-500 shrink-0 mt-1" />
-												<span className="text-muted-foreground text-lg leading-relaxed">
+												<span className="text-muted-foreground text-base sm:text-lg leading-relaxed">
 													{bullet}
 												</span>
 											</li>
@@ -190,17 +219,16 @@ const ReferPage = () => {
 									</div>
 								</div>
 
-								{/* RIGHT VIDEO */}
-								<div className="relative p-8 md:p-12 flex items-center justify-end">
-									{/* Glow only (NO background color) */}
+								{/* ================= RIGHT VIDEO (DESKTOP ONLY) ================= */}
+								<div className="hidden md:flex relative p-8 md:p-12 items-center justify-end">
+									{/* Glow only */}
 									<div className="absolute -top-14 -left-14 w-64 h-64 bg-teal-400/25 blur-3xl rounded-full" />
 									<div className="absolute -bottom-14 -right-14 w-64 h-64 bg-yellow-400/25 blur-3xl rounded-full" />
 
-									<div className="relative w-full max-w-[420px]">
-										{/* Glow behind video */}
+									{/* ✅ Video smaller (desktop too) */}
+									<div className="relative w-full max-w-[300px] lg:max-w-[320px]">
 										<div className="absolute -inset-5 rounded-[36px] bg-gradient-to-br from-teal-400/35 via-cyan-300/20 to-yellow-400/30 blur-2xl opacity-90" />
 
-										{/* Video Container */}
 										<div className="relative z-10 rounded-[60px] overflow-hidden shadow-2xl border border-white/40 bg-transparent">
 											<video
 												key={activeTab}
@@ -209,7 +237,7 @@ const ReferPage = () => {
 												muted
 												loop
 												playsInline
-												className="w-full h-auto object-contain rounded-[32px]"
+												className="w-full h-auto object-contain"
 											/>
 										</div>
 									</div>

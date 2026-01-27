@@ -113,37 +113,136 @@ const AboutPage = () => {
 			<section className="py-14 sm:py-16 md:py-20 relative bg-white dark:bg-[#07101d]">
 				<div className="container-custom px-4">
 					<Tabs value={activeTab} onValueChange={setActiveTab}>
-						{/* ✅ MOBILE FRIENDLY TABS (scrollable) */}
-						<div className="w-full overflow-x-auto no-scrollbar">
+						{/* ✅ MOBILE: ONE LINE SCROLLABLE (3 buttons in single row) */}
+						<div className="sm:hidden w-full overflow-x-auto no-scrollbar hide-scroll-hint px-1">
 							<TabsList
-								className="w-max min-w-full flex justify-center gap-3 sm:gap-4
-								bg-transparent border-none shadow-none p-0"
+								className="
+                  w-max min-w-full
+                  flex items-center justify-start gap-2
+                  bg-transparent border-none shadow-none p-0
+                "
 							>
 								<TabsTrigger
 									value="who"
-									className="px-4 sm:px-6 py-2.5 sm:py-3 rounded-full sm:rounded-xl font-semibold text-sm sm:text-base whitespace-nowrap
-border border-slate-200/60 dark:border-white/10
-bg-white/70 dark:bg-white/5
-data-[state=active]:bg-gradient-to-r data-[state=active]:from-teal-500 data-[state=active]:to-cyan-500
-data-[state=active]:text-white shadow-sm data-[state=active]:shadow-md"
+									className="
+                    h-9 px-4
+                    rounded-full
+                    font-semibold text-[12px]
+                    whitespace-nowrap
+                    border border-slate-200/70 dark:border-white/10
+                    bg-white/95 dark:bg-white/5
+                    text-slate-700 dark:text-slate-200
+                    shadow-sm transition-all
+                    focus-visible:outline-none focus-visible:ring-0 focus-visible:ring-offset-0
+                    data-[state=active]:bg-teal-600
+                    data-[state=active]:text-white
+                    data-[state=active]:border-teal-600
+                    data-[state=active]:shadow-md
+                  "
 								>
 									Who We Are
 								</TabsTrigger>
 
 								<TabsTrigger
 									value="what"
-									className="px-5 sm:px-6 py-2.5 sm:py-3 rounded-xl font-semibold whitespace-nowrap
-          data-[state=active]:bg-gradient-to-r data-[state=active]:from-teal-500 data-[state=active]:to-cyan-500 
-          data-[state=active]:text-white shadow-md"
+									className="
+                    h-9 px-4
+                    rounded-full
+                    font-semibold text-[12px]
+                    whitespace-nowrap
+                    border border-slate-200/70 dark:border-white/10
+                    bg-white/95 dark:bg-white/5
+                    text-slate-700 dark:text-slate-200
+                    shadow-sm transition-all
+                    focus-visible:outline-none focus-visible:ring-0 focus-visible:ring-offset-0
+                    data-[state=active]:bg-teal-600
+                    data-[state=active]:text-white
+                    data-[state=active]:border-teal-600
+                    data-[state=active]:shadow-md
+                  "
 								>
 									What We Do
 								</TabsTrigger>
 
 								<TabsTrigger
 									value="how"
-									className="px-5 sm:px-6 py-2.5 sm:py-3 rounded-xl font-semibold whitespace-nowrap
-          data-[state=active]:bg-gradient-to-r data-[state=active]:from-teal-500 data-[state=active]:to-cyan-500 
-          data-[state=active]:text-white shadow-md"
+									className="
+                    h-9 px-4
+                    rounded-full
+                    font-semibold text-[12px]
+                    whitespace-nowrap
+                    border border-slate-200/70 dark:border-white/10
+                    bg-white/95 dark:bg-white/5
+                    text-slate-700 dark:text-slate-200
+                    shadow-sm transition-all
+                    focus-visible:outline-none focus-visible:ring-0 focus-visible:ring-offset-0
+                    data-[state=active]:bg-teal-600
+                    data-[state=active]:text-white
+                    data-[state=active]:border-teal-600
+                    data-[state=active]:shadow-md
+                  "
+								>
+									How We Do It
+								</TabsTrigger>
+							</TabsList>
+						</div>
+
+						{/* ✅ DESKTOP */}
+						<div className="hidden sm:flex justify-center">
+							<TabsList className="flex items-center justify-center gap-3 sm:gap-4 bg-transparent border-none shadow-none p-0">
+								<TabsTrigger
+									value="who"
+									className="
+                    h-11 sm:h-12 px-5 sm:px-7 rounded-full
+                    font-semibold text-sm sm:text-base whitespace-nowrap
+                    border border-slate-200/70 dark:border-white/10
+                    bg-white/95 dark:bg-white/5
+                    text-slate-700 dark:text-slate-200
+                    shadow-sm transition-all duration-200
+                    focus-visible:outline-none focus-visible:ring-0 focus-visible:ring-offset-0
+                    data-[state=active]:bg-teal-600
+                    data-[state=active]:text-white
+                    data-[state=active]:border-teal-600
+                    data-[state=active]:shadow-md
+                  "
+								>
+									Who We Are
+								</TabsTrigger>
+
+								<TabsTrigger
+									value="what"
+									className="
+                    h-11 sm:h-12 px-5 sm:px-7 rounded-full
+                    font-semibold text-sm sm:text-base whitespace-nowrap
+                    border border-slate-200/70 dark:border-white/10
+                    bg-white/95 dark:bg-white/5
+                    text-slate-700 dark:text-slate-200
+                    shadow-sm transition-all duration-200
+                    focus-visible:outline-none focus-visible:ring-0 focus-visible:ring-offset-0
+                    data-[state=active]:bg-teal-600
+                    data-[state=active]:text-white
+                    data-[state=active]:border-teal-600
+                    data-[state=active]:shadow-md
+                  "
+								>
+									What We Do
+								</TabsTrigger>
+
+								<TabsTrigger
+									value="how"
+									className="
+                    h-11 sm:h-12 px-5 sm:px-7 rounded-full
+                    font-semibold text-sm sm:text-base whitespace-nowrap
+                    border border-slate-200/70 dark:border-white/10
+                    bg-white/95 dark:bg-white/5
+                    text-slate-700 dark:text-slate-200
+                    shadow-sm transition-all duration-200
+                    focus-visible:outline-none focus-visible:ring-0 focus-visible:ring-offset-0
+                    data-[state=active]:bg-teal-600
+                    data-[state=active]:text-white
+                    data-[state=active]:border-teal-600
+                    data-[state=active]:shadow-md
+                  "
 								>
 									How We Do It
 								</TabsTrigger>
@@ -151,12 +250,21 @@ data-[state=active]:text-white shadow-sm data-[state=active]:shadow-md"
 						</div>
 					</Tabs>
 
-					{/* ✅ PREMIUM CONTENT */}
-					<div className="mt-10 sm:mt-12 grid lg:grid-cols-2 gap-8 md:gap-10 items-center">
+					{/* ✅ CONTENT ORDER FIX:
+              Mobile: Heading -> Video -> Text
+              Desktop: Video -> Text (as it was)
+          */}
+					<div className="mt-10 sm:mt-12 grid lg:grid-cols-2 gap-8 md:gap-10 items-center pb-24 sm:pb-10">
+						{/* ✅ MOBILE HEADING FIRST */}
+						<div className="block lg:hidden text-center">
+							<h2 className="text-2xl font-extrabold text-slate-900 dark:text-white leading-snug">
+								{content.title}
+							</h2>
+						</div>
+
 						{/* LEFT VIDEO */}
-						<div className="relative flex justify-center">
-							<div className="relative w-full max-w-[260px] sm:max-w-[320px] md:max-w-[380px]">
-								{/* Teal + Yellow border glow */}
+						<div className="relative flex justify-center order-2 lg:order-1">
+							<div className="relative w-full max-w-[240px] sm:max-w-[320px] md:max-w-[380px]">
 								<div className="absolute -inset-3 rounded-3xl bg-gradient-to-br from-teal-400/45 via-cyan-300/20 to-yellow-400/45 blur-2xl opacity-80" />
 
 								<video
@@ -180,9 +288,9 @@ data-[state=active]:text-white shadow-sm data-[state=active]:shadow-md"
 						{/* RIGHT TEXT */}
 						<div
 							className="relative p-5 sm:p-6 rounded-2xl fade
-        bg-gradient-to-br from-teal-50 via-white to-yellow-50
-        dark:from-[#0f1f2e] dark:via-[#0b1220] dark:to-[#1a1405]
-        shadow-xl overflow-hidden"
+                bg-gradient-to-br from-teal-50 via-white to-yellow-50
+                dark:from-[#0f1f2e] dark:via-[#0b1220] dark:to-[#1a1405]
+                shadow-xl overflow-hidden order-3 lg:order-2"
 						>
 							<span className="absolute top-6 left-6 w-3 h-3 bg-teal-400 rounded-full animate-icon"></span>
 							<span className="absolute bottom-10 right-10 w-2.5 h-2.5 bg-yellow-400 rounded-full animate-icon"></span>
@@ -202,7 +310,8 @@ data-[state=active]:text-white shadow-sm data-[state=active]:shadow-md"
 
 							<content.icon className="w-12 h-12 sm:w-14 sm:h-14 text-teal-500 mb-4" />
 
-							<h2 className="text-2xl sm:text-3xl font-bold mb-4 leading-tight">
+							{/* ✅ DESKTOP ONLY HEADING HERE */}
+							<h2 className="hidden lg:block text-2xl sm:text-3xl font-bold mb-4 leading-tight">
 								{content.title}
 							</h2>
 
@@ -252,11 +361,18 @@ data-[state=active]:text-white shadow-sm data-[state=active]:shadow-md"
 				</div>
 			</section>
 
-			{/* hide scrollbar for tabs scroll */}
+			{/* ✅ EXTRA CSS (ONLY for mobile tabs scroll line remove) */}
 			<style>{`
-				.no-scrollbar::-webkit-scrollbar { display: none; }
-				.no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
-			`}</style>
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+        /* ✅ stops the scroll hint / weird line under tabs on mobile */
+        .hide-scroll-hint {
+          -webkit-overflow-scrolling: touch;
+          overscroll-behavior-x: contain;
+          scrollbar-gutter: stable both-edges;
+        }
+      `}</style>
 		</Layout>
 	);
 };

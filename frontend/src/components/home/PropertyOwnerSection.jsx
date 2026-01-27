@@ -35,7 +35,81 @@ export const PropertyOwnerSection = () => {
 			<SectionAnimations />
 
 			<div className="container-custom owner-wide">
-				<div className="flex flex-col lg:flex-row items-center gap-12">
+				{/* ✅ MOBILE VERSION ONLY (Heading → Video → Text → Points → Button → PDF) */}
+				<div className="block lg:hidden px-4">
+					{/* ✅ 1) Heading */}
+					<h2 className="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-white mb-4 whitespace-nowrap">
+						Are You a Property Owner?
+					</h2>
+					{/* ✅ 2) Video (smaller) */}
+					<div className="relative flex justify-center mb-5">
+						<div className="absolute w-[260px] h-[320px] bg-gradient-to-br from-teal-400/35 via-cyan-300/25 to-yellow-300/25 rounded-full blur-3xl animate-glow" />
+
+						<div className="relative z-10 w-[190px] aspect-[9/19] rounded-[30px] bg-neutral-900 shadow-xl overflow-hidden">
+							<video
+								src="/videos/property-owner.mp4"
+								autoPlay
+								muted
+								loop
+								playsInline
+								className="w-full h-full object-cover"
+							/>
+						</div>
+					</div>
+
+					{/* ✅ 3) Paragraph (compact) */}
+					<p className="text-sm sm:text-base text-slate-700 dark:text-slate-300 mb-5 leading-relaxed">
+						InstaMakaan helps you convert your property into a predictable,
+						high-earning asset with guaranteed monthly income.
+					</p>
+
+					{/* ✅ 4) Points (compact) */}
+					<div className="space-y-3 mb-6">
+						{[
+							'Guaranteed rental income every month',
+							'Professional property management',
+							'Verified & reliable tenants',
+							'Zero-hassle maintenance',
+						].map((point, i) => (
+							<div key={i} className="flex items-start gap-2.5">
+								<CheckCircle2 className="text-teal-500 w-4 h-4 mt-1 shrink-0" />
+								<span className="text-sm sm:text-base text-slate-700 dark:text-slate-300">
+									{point}
+								</span>
+							</div>
+						))}
+					</div>
+
+					{/* ✅ 5) CTA Button (smaller) */}
+					<Button
+						variant="teal"
+						size="lg"
+						className="w-full justify-center py-4 rounded-2xl text-sm sm:text-base"
+					>
+						<Link to="/contact" className="flex items-center gap-2">
+							Contact Us Now
+							<ArrowRight className="w-4 h-4" />
+						</Link>
+					</Button>
+
+					{/* ✅ 6) Brochure Line (compact) */}
+					<div className="mt-3 flex flex-wrap items-center gap-2 text-xs sm:text-sm text-slate-600 dark:text-slate-300">
+						<span>Download our</span>
+
+						<a
+							href="/pdf/brochure-property-owners.pdf"
+							download
+							className="font-semibold text-slate-900 dark:text-white underline underline-offset-4 decoration-yellow-400 hover:text-teal-600 transition"
+						>
+							FREE Owner’s Brochure
+						</a>
+
+						<ArrowRight className="w-3.5 h-3.5 text-slate-500 dark:text-slate-300" />
+					</div>
+				</div>
+
+				{/* ✅ DESKTOP VERSION ONLY (Your Original Layout) */}
+				<div className="hidden lg:flex flex-col lg:flex-row items-center gap-12">
 					{/* ================= PHONE ================= */}
 					<div className="relative flex justify-center w-full lg:w-[38%]">
 						<div
@@ -48,7 +122,6 @@ export const PropertyOwnerSection = () => {
 							className="relative z-10 w-[220px] sm:w-[260px] md:w-[300px] aspect-[9/19]
               rounded-[38px] bg-neutral-900 shadow-2xl 
               overflow-hidden "
-							//   rounded-[35px] bg-black"
 						>
 							<video
 								src="/videos/property-owner.mp4"

@@ -5,6 +5,7 @@ import CustomIcon from '@/components/CustomIcon';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import { Menu, User, Sun, Moon, ChevronDown } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { X } from 'lucide-react';
 
 const navLinks = [
 	{ name: 'Home', path: '/' },
@@ -192,10 +193,16 @@ export const Header = () => {
 							<SheetContent
 								side="right"
 								className="w-[320px] p-0 dark:bg-[#0b1220] bg-white overflow-hidden h-[100dvh] max-h-[100dvh] z-[10000]"
-								onInteractOutside={() => setIsMobileMenuOpen(false)}
-								onEscapeKeyDown={() => setIsMobileMenuOpen(false)}
 							>
-								{/* ✅ FULL SCROLL AREA */}
+								{/* ✅ CUSTOM CLOSE BUTTON */}
+								<button
+									type="button"
+									onClick={() => setIsMobileMenuOpen(false)}
+									className="absolute top-4 right-4 z-50 w-10 h-10 flex items-center justify-center rounded-full border border-slate-200 dark:border-white/10 bg-white/80 dark:bg-white/5 hover:bg-slate-100 dark:hover:bg-white/10 transition"
+								>
+									<X className="w-5 h-5 text-slate-900 dark:text-white" />
+								</button>
+
 								<div className="h-full overflow-y-auto overscroll-contain">
 									{/* Header inside menu */}
 									<div className="p-5 border-b border-slate-200/60 dark:border-white/10 bg-gradient-to-b from-teal-50/60 to-white dark:from-white/5 dark:to-transparent sticky top-0 z-10">

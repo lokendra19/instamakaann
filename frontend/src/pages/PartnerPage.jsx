@@ -168,7 +168,7 @@ const PartnerPage = () => {
 			</section>
 
 			{/* ================= SERVICES ================= */}
-			{services.map((service, index) => (
+			{services.map((service) => (
 				<section
 					key={service.id}
 					className="py-14 md:py-20 bg-slate-50 dark:bg-[#0f172a]"
@@ -176,98 +176,279 @@ const PartnerPage = () => {
 					<div className="container-custom">
 						<Card className="relative rounded-3xl overflow-hidden shadow-xl bg-white dark:bg-[#0b1220]">
 							<CardContent className="grid md:grid-cols-2 gap-8 md:gap-10 items-center p-4 sm:p-6 md:p-10">
-								{/* PHONE / VIDEO — OLD FULL ANIMATION */}
-								<div className="relative flex justify-center items-center">
-									<div className="absolute w-[260px] h-[320px] sm:w-[360px] sm:h-[440px] bg-gradient-to-br from-teal-400/40 via-cyan-300/30 to-yellow-300/30 rounded-full blur-3xl animate-glow" />
-
-									<svg
-										className="absolute w-[360px] sm:w-[500px] opacity-40 animate-wave"
-										viewBox="0 0 400 200"
-										fill="none"
-									>
-										<path
-											d="M0 120 C80 30 160 210 240 120 320 30 400 150 400 150"
-											stroke="#32d1c0"
-											strokeWidth="22"
-											strokeLinecap="round"
-										/>
-									</svg>
-
-									{service.floatIcons.map((ic, i) => (
-										<span
-											key={i}
-											className="absolute text-3xl font-bold text-teal-500 animate-icon"
-											style={{
-												top: i === 0 ? '-18px' : '82%',
-												left: i === 0 ? '75%' : '-14px',
-											}}
-										>
-											{ic}
-										</span>
-									))}
-
-									<div className="relative z-10 w-[210px] xs:w-[230px] sm:w-[260px] md:w-[300px] aspect-[9/19] rounded-[40px] sm:rounded-[45px] shadow-2xl animate-phone overflow-hidden">
-										<video
-											src={service.video}
-											autoPlay
-											muted
-											loop
-											playsInline
-											className="w-full h-full object-cover"
-										/>
-										{/* <div className="absolute top-2 left-1/2 -translate-x-1/2 w-[92px] h-[26px] bg-black rounded-full" /> */}
-										{/* <div className="absolute bottom-2 left-1/2 -translate-x-1/2 w-20 h-1 bg-white/30 rounded-full" /> */}
-									</div>
-								</div>
-
-								{/* TEXT — SAME AS SCREENSHOT */}
-								<div className="relative text-anim overflow-hidden rounded-3xl p-5 w-full max-w-none ">
-									{/* BACKGROUND GRADIENT */}
-									<div className="absolute inset-0 -z-10 bg-gradient-to-br from-teal-50 via-white to-yellow-50 dark:from-[#0f1f2e] dark:via-[#0b1220] dark:to-[#1a1405]" />
-
-									{/* FLOATING DOTS */}
-									<span className="absolute top-6 left-6 w-3 h-3 bg-teal-400 rounded-full animate-icon" />
-									<span className="absolute bottom-10 right-10 w-2.5 h-2.5 bg-yellow-400 rounded-full animate-icon" />
-
-									{/* WAVE SHAPE */}
-									<svg
-										className="absolute -z-10 bottom-0 right-0 w-[320px] opacity-30 animate-wave"
-										viewBox="0 0 400 200"
-										fill="none"
-									>
-										<path
-											d="M0 140 C120 60 240 220 400 120"
-											stroke="#2dd4bf"
-											strokeWidth="18"
-											strokeLinecap="round"
-										/>
-									</svg>
-
-									<h3 className="text-2xl sm:text-3xl md:text-5xl font-extrabold mb-5 sm:mb-6 whitespace-normal">
+								{/* ================= MOBILE ONLY ORDER (Heading -> Video -> Text) ================= */}
+								<div className="md:hidden space-y-5">
+									{/* ✅ HEADING FIRST */}
+									<h3 className="text-[18px] text-center font-extrabold whitespace-nowrap text-slate-900 dark:text-white">
 										{service.headline}
 									</h3>
 
-									<ul className="space-y-3 mb-6">
-										{service.features.map((f, i) => (
-											<li key={i} className="flex gap-3">
-												<CheckCircle2 className="text-teal-500 mt-1" />
-												<span>{f}</span>
-											</li>
-										))}
-									</ul>
+									{/* ✅ VIDEO SECOND */}
+									<div className="relative flex justify-center items-center w-full py-2">
+										{/* Glow */}
+										<div className="absolute w-[240px] h-[280px] bg-gradient-to-br from-teal-400/40 via-cyan-300/30 to-yellow-300/30 rounded-full blur-3xl animate-glow" />
 
-									<Button variant="teal" asChild>
-										<Link to="/contact">
-											{service.cta}
-											<ArrowRight className="ml-2 w-4 h-4" />
-										</Link>
-									</Button>
+										{/* Wave */}
+										<svg
+											className="absolute w-[320px] opacity-40 animate-wave"
+											viewBox="0 0 400 200"
+											fill="none"
+										>
+											<path
+												d="M0 120 C80 30 160 210 240 120 320 30 400 150 400 150"
+												stroke="#32d1c0"
+												strokeWidth="22"
+												strokeLinecap="round"
+											/>
+										</svg>
+
+										{/* Floating Icons */}
+										{service.floatIcons.map((ic, i) => (
+											<span
+												key={i}
+												className="absolute text-2xl font-bold text-teal-500 animate-icon"
+												style={{
+													top: i === 0 ? '-10px' : '82%',
+													left: i === 0 ? '75%' : '-8px',
+												}}
+											>
+												{ic}
+											</span>
+										))}
+
+										{/* Phone */}
+										<div className="relative z-10 w-[210px] aspect-[9/19] rounded-[38px] shadow-2xl overflow-hidden animate-phone">
+											<video
+												src={service.video}
+												autoPlay
+												muted
+												loop
+												playsInline
+												className="w-full h-full object-cover"
+											/>
+										</div>
+									</div>
+
+									{/* ✅ TEXT LAST */}
+									<div className="relative text-anim overflow-hidden rounded-3xl p-5 w-full">
+										<div className="absolute inset-0 -z-10 bg-gradient-to-br from-teal-50 via-white to-yellow-50 dark:from-[#0f1f2e] dark:via-[#0b1220] dark:to-[#1a1405]" />
+
+										<span className="absolute top-6 left-6 w-3 h-3 bg-teal-400 rounded-full animate-icon" />
+										<span className="absolute bottom-10 right-10 w-2.5 h-2.5 bg-yellow-400 rounded-full animate-icon" />
+
+										<svg
+											className="absolute -z-10 bottom-0 right-0 w-[260px] opacity-30 animate-wave"
+											viewBox="0 0 400 200"
+											fill="none"
+										>
+											<path
+												d="M0 140 C120 60 240 220 400 120"
+												stroke="#2dd4bf"
+												strokeWidth="18"
+												strokeLinecap="round"
+											/>
+										</svg>
+
+										<ul className="space-y-3 mb-6">
+											{service.features.map((f, i) => (
+												<li key={i} className="flex gap-3">
+													<CheckCircle2 className="text-teal-500 mt-1" />
+													<span>{f}</span>
+												</li>
+											))}
+										</ul>
+
+										<Button variant="teal" asChild className="w-full">
+											<Link to="/contact" className="justify-center">
+												{service.cta}
+												<ArrowRight className="ml-2 w-4 h-4" />
+											</Link>
+										</Button>
+									</div>
 								</div>
+
+								{/* ================= DESKTOP ONLY (Old UI SAME) ================= */}
+								<>
+									{/* PHONE / VIDEO */}
+									<div className="hidden md:flex relative justify-center items-center">
+										<div className="absolute w-[260px] h-[320px] sm:w-[360px] sm:h-[440px] bg-gradient-to-br from-teal-400/40 via-cyan-300/30 to-yellow-300/30 rounded-full blur-3xl animate-glow" />
+
+										<svg
+											className="absolute w-[360px] sm:w-[500px] opacity-40 animate-wave"
+											viewBox="0 0 400 200"
+											fill="none"
+										>
+											<path
+												d="M0 120 C80 30 160 210 240 120 320 30 400 150 400 150"
+												stroke="#32d1c0"
+												strokeWidth="22"
+												strokeLinecap="round"
+											/>
+										</svg>
+
+										{service.floatIcons.map((ic, i) => (
+											<span
+												key={i}
+												className="absolute text-3xl font-bold text-teal-500 animate-icon"
+												style={{
+													top: i === 0 ? '-18px' : '82%',
+													left: i === 0 ? '75%' : '-14px',
+												}}
+											>
+												{ic}
+											</span>
+										))}
+
+										<div className="relative z-10 w-[210px] xs:w-[230px] sm:w-[260px] md:w-[300px] aspect-[9/19] rounded-[40px] sm:rounded-[45px] shadow-2xl animate-phone overflow-hidden">
+											<video
+												src={service.video}
+												autoPlay
+												muted
+												loop
+												playsInline
+												className="w-full h-full object-cover"
+											/>
+										</div>
+									</div>
+
+									{/* TEXT */}
+									<div className="hidden md:block relative text-anim overflow-hidden rounded-3xl p-5 w-full max-w-none">
+										<div className="absolute inset-0 -z-10 bg-gradient-to-br from-teal-50-50 via-white to-yellow-50 dark:from-[#0f1f2e] dark:via-[#0b1220] dark:to-[#1a1405]" />
+
+										<span className="absolute top-6 left-6 w-3 h-3 bg-teal-400 rounded-full animate-icon" />
+										<span className="absolute bottom-10 right-10 w-2.5 h-2.5 bg-yellow-400 rounded-full animate-icon" />
+
+										<svg
+											className="absolute -z-10 bottom-0 right-0 w-[320px] opacity-30 animate-wave"
+											viewBox="0 0 400 200"
+											fill="none"
+										>
+											<path
+												d="M0 140 C120 60 240 220 400 120"
+												stroke="#2dd4bf"
+												strokeWidth="18"
+												strokeLinecap="round"
+											/>
+										</svg>
+
+										<h3 className="text-2xl sm:text-3xl md:text-5xl font-extrabold mb-5 sm:mb-6 whitespace-normal">
+											{service.headline}
+										</h3>
+
+										<ul className="space-y-3 mb-6">
+											{service.features.map((f, i) => (
+												<li key={i} className="flex gap-3">
+													<CheckCircle2 className="text-teal-500 mt-1" />
+													<span>{f}</span>
+												</li>
+											))}
+										</ul>
+
+										<Button variant="teal" asChild>
+											<Link to="/contact">
+												{service.cta}
+												<ArrowRight className="ml-2 w-4 h-4" />
+											</Link>
+										</Button>
+									</div>
+								</>
 							</CardContent>
 						</Card>
 					</div>
 				</section>
 			))}
+
+			{/* ================= PARTNER TESTIMONIALS ================= */}
+			<section className="py-16 sm:py-20 bg-white dark:bg-[#0b1220]">
+				<div className="container-custom">
+					<div className="text-center mb-10 sm:mb-14">
+						<h2 className="text-3xl sm:text-4xl font-extrabold text-teal-600 dark:text-teal-400">
+							What Our Partners Say
+						</h2>
+					</div>
+
+					<div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+						<Card className="rounded-3xl border-0 shadow-card bg-white dark:bg-[#0f172a]">
+							<CardContent className="p-6">
+								<div className="flex gap-1 mb-4">
+									<span className="text-yellow-400">★</span>
+									<span className="text-yellow-400">★</span>
+									<span className="text-yellow-400">★</span>
+									<span className="text-yellow-400">★</span>
+									<span className="text-yellow-400">★</span>
+								</div>
+
+								<p className="text-slate-600 dark:text-slate-300 leading-relaxed italic">
+									"InstaMakaan has transformed how I do business. The verified
+									leads are genuine and the commission structure is crystal
+									clear."
+								</p>
+
+								<div className="mt-6">
+									<p className="font-semibold text-slate-900 dark:text-white">
+										Rajesh Kumar
+									</p>
+									<p className="text-sm text-slate-500 dark:text-slate-400">
+										Property Agent, Noida
+									</p>
+								</div>
+							</CardContent>
+						</Card>
+
+						<Card className="rounded-3xl border-0 shadow-card bg-white dark:bg-[#0f172a]">
+							<CardContent className="p-6">
+								<div className="flex gap-1 mb-4">
+									<span className="text-yellow-400">★</span>
+									<span className="text-yellow-400">★</span>
+									<span className="text-yellow-400">★</span>
+									<span className="text-yellow-400">★</span>
+									<span className="text-yellow-400">★</span>
+								</div>
+
+								<p className="text-slate-600 dark:text-slate-300 leading-relaxed italic">
+									"The dashboard is incredibly easy to use and I love how
+									professional the entire process is. Highly recommend!"
+								</p>
+
+								<div className="mt-6">
+									<p className="font-semibold text-slate-900 dark:text-white">
+										Priya Sharma
+									</p>
+									<p className="text-sm text-slate-500 dark:text-slate-400">
+										Real Estate Broker, Gurgaon
+									</p>
+								</div>
+							</CardContent>
+						</Card>
+
+						<Card className="rounded-3xl border-0 shadow-card bg-white dark:bg-[#0f172a]">
+							<CardContent className="p-6">
+								<div className="flex gap-1 mb-4">
+									<span className="text-yellow-400">★</span>
+									<span className="text-yellow-400">★</span>
+									<span className="text-yellow-400">★</span>
+									<span className="text-yellow-400">★</span>
+									<span className="text-yellow-400">★</span>
+								</div>
+
+								<p className="text-slate-600 dark:text-slate-300 leading-relaxed italic">
+									"Best decision for our business. The support team is amazing
+									and we have seen 3x growth in our listings."
+								</p>
+
+								<div className="mt-6">
+									<p className="font-semibold text-slate-900 dark:text-white">
+										Amit Verma
+									</p>
+									<p className="text-sm text-slate-500 dark:text-slate-400">
+										Developer Partner, Greater Noida
+									</p>
+								</div>
+							</CardContent>
+						</Card>
+					</div>
+				</div>
+			</section>
 		</Layout>
 	);
 };

@@ -30,7 +30,15 @@ const Dropdown = ({ icon: Icon, label, value, setValue, options }) => {
 			<button
 				type="button"
 				onClick={() => setOpen(!open)}
-				className="w-full h-12 sm:h-11 px-3 flex items-center justify-between rounded-xl border bg-white dark:bg-[#0b1220] text-sm"
+				className="
+					w-full h-10 sm:h-11
+					px-3
+					flex items-center justify-between
+					rounded-xl border
+					bg-white dark:bg-[#0b1220]
+					text-sm
+					border-slate-300/50 dark:border-white/10
+				"
 			>
 				<div className="flex items-center gap-2 min-w-0">
 					{Icon && <Icon className="w-4 h-4 text-slate-400 shrink-0" />}
@@ -42,6 +50,7 @@ const Dropdown = ({ icon: Icon, label, value, setValue, options }) => {
 						{value || label}
 					</span>
 				</div>
+
 				<ChevronDown
 					className={`w-4 h-4 shrink-0 transition-transform ${
 						open ? 'rotate-180' : ''
@@ -50,19 +59,37 @@ const Dropdown = ({ icon: Icon, label, value, setValue, options }) => {
 			</button>
 
 			{open && (
-				<div className="absolute left-0 right-0 mt-2 z-50 bg-white dark:bg-[#0b1220] border rounded-xl shadow max-h-[180px] overflow-y-auto mb-6">
-					{options.map((o) => (
-						<div
-							key={o}
-							onClick={() => {
-								setValue(o);
-								setOpen(false);
-							}}
-							className="px-4 py-3 text-sm hover:bg-slate-100 dark:hover:bg-white/10 cursor-pointer"
-						>
-							{o}
-						</div>
-					))}
+				<div
+					className="
+						absolute left-0 right-0 mt-2 z-50
+						bg-white dark:bg-[#0b1220]
+						border border-slate-200 dark:border-white/10
+						rounded-xl shadow-xl
+						overflow-hidden
+						py-1
+					"
+					/* ✅ Height fixed so only ~3 options show, rest scroll */
+					style={{ maxHeight: '132px' }}
+				>
+					<div className="max-h-[132px] overflow-y-auto">
+						{options.map((o) => (
+							<div
+								key={o}
+								onClick={() => {
+									setValue(o);
+									setOpen(false);
+								}}
+								className="
+									px-4 py-2
+									text-xs sm:text-sm
+									hover:bg-slate-100 dark:hover:bg-white/10
+									cursor-pointer
+								"
+							>
+								{o}
+							</div>
+						))}
+					</div>
 				</div>
 			)}
 		</div>
@@ -127,7 +154,7 @@ export const HeroSection = () => {
 	};
 
 	return (
-		<section className="relative min-h-[90vh] sm:min-h-screen overflow-hidden -mt-8 sm:-mt-6">
+		<section className="relative min-h-[92vh] sm:min-h-screen overflow-hidden -mt-8 sm:-mt-6">
 			{/* BG IMAGE */}
 			<div
 				className="absolute inset-0 bg-cover bg-center scale-105"
@@ -137,20 +164,33 @@ export const HeroSection = () => {
 			{/* OVERLAY */}
 			<div className="absolute inset-0 bg-gradient-to-b from-white/70 via-white/60 to-white/80 dark:from-[#0b1220]/90 dark:via-[#0b1220]/85 dark:to-[#0b1220]/95" />
 
-			{/* TABS */}
-			<div className="absolute top-24 sm:top-36 left-1/2 -translate-x-1/2 z-20 w-full px-4">
+			{/* ✅ TABS (Smaller in Mobile) */}
+			<div className="absolute top-16 sm:top-36 left-1/2 -translate-x-1/2 z-20 w-full px-4">
 				<div className="flex justify-center">
-					<div className="flex bg-white/90 dark:bg-[#0b1220]/80 rounded-full p-1 mb-6 sm:mb-8 w-full max-w-[360px] sm:max-w-none sm:w-auto">
+					<div
+						className="
+							flex bg-white/90 dark:bg-[#0b1220]/80
+							rounded-full
+							p-1
+							w-full max-w-[320px] sm:max-w-none sm:w-auto
+							shadow-lg
+						"
+					>
 						{['rent', 'pre', 'buy'].map((tab) => (
 							<button
 								type="button"
 								key={tab}
 								onClick={() => setActiveTab(tab)}
-								className={`flex-1 sm:flex-none px-5 py-2 rounded-full text-sm transition ${
-									activeTab === tab
-										? 'bg-teal-600 text-white'
-										: 'text-slate-700 dark:text-slate-200'
-								}`}
+								className={`
+									flex-1 sm:flex-none
+									px-3 sm:px-5
+									py-1.5 sm:py-2
+									rounded-full
+									text-[12px] sm:text-sm
+									leading-none
+									transition
+									${activeTab === tab ? 'bg-teal-600 text-white' : 'text-slate-700 dark:text-slate-200'}
+								`}
 							>
 								{tab === 'rent'
 									? 'Rent'
@@ -164,8 +204,8 @@ export const HeroSection = () => {
 			</div>
 
 			{/* HERO TEXT */}
-			<div className="relative z-10 text-center w-full max-w-6xl mx-auto px-4 pt-48 sm:pt-60">
-				<h1 className="text-4xl sm:text-6xl md:text-7xl font-bold text-teal-500 dark:text-white">
+			<div className="relative z-10 text-center w-full max-w-6xl mx-auto px-4 pt-36 sm:pt-60">
+				<h1 className="text-3xl sm:text-6xl md:text-7xl font-bold text-teal-500 dark:text-white leading-tight">
 					{activeTab === 'rent' && (
 						<>
 							Find Your Rental{' '}
@@ -176,7 +216,7 @@ export const HeroSection = () => {
 					)}
 
 					{activeTab === 'buy' && (
-						<span className="inline-block">
+						<span className="inline-block lg:whitespace-nowrap">
 							Discover Your Future{' '}
 							<span className="text-yellow-500 dark:text-yellow-500 font-bold">
 								Property.
@@ -194,15 +234,7 @@ export const HeroSection = () => {
 					)}
 				</h1>
 
-				<p
-					className="
-            mt-3 sm:mt-6
-            text-lg sm:text-xl md:text-2xl
-            leading-relaxed
-            text-black-600 dark:text-slate-300
-            max-w-3xl mx-auto
-          "
-				>
+				<p className="mt-3 sm:mt-6 text-sm sm:text-xl md:text-2xl leading-relaxed text-slate-700 dark:text-slate-300 max-w-3xl mx-auto whitespace-nowrap">
 					{activeTab === 'rent' &&
 						'Calm, friendly, aspirational living spaces for your comfort.'}
 					{activeTab === 'buy' &&
@@ -213,8 +245,17 @@ export const HeroSection = () => {
 			</div>
 
 			{/* SEARCH BAR */}
-			<div className="relative z-10 mt-8 sm:mt-10 w-full max-w-6xl mx-auto px-4">
-				<div className="bg-white/90 dark:bg-[#0b1220]/85 rounded-2xl shadow-2xl p-4 flex flex-col md:flex-row gap-3">
+			<div className="relative z-10 mt-5 sm:mt-10 w-full max-w-6xl mx-auto px-4">
+				<div
+					className="
+						bg-white/90 dark:bg-[#0b1220]/85
+						rounded-2xl shadow-2xl
+						p-3 sm:p-4 md:p-4
+						flex flex-col md:flex-row
+						gap-2 sm:gap-3
+					"
+				>
+					{/* City */}
 					<Dropdown
 						icon={MapPin}
 						label="City"
@@ -223,7 +264,7 @@ export const HeroSection = () => {
 						options={['Noida', 'Greater Noida', 'Noida Extension', 'Ghaziabad']}
 					/>
 
-					{/* SEARCH */}
+					{/* Search input */}
 					<div className="relative flex-1">
 						<input
 							value={searchText}
@@ -233,11 +274,19 @@ export const HeroSection = () => {
 							}}
 							onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
 							placeholder="Search locality / society / landmark"
-							className="w-full h-11 px-4 rounded-xl border text-sm bg-white dark:bg-[#0b1220] text-slate-900 dark:text-slate-100 border-slate-300/50 dark:border-white/10"
+							className="
+								w-full h-10 sm:h-11
+								px-4
+								rounded-xl border
+								text-sm
+								bg-white dark:bg-[#0b1220]
+								text-slate-900 dark:text-slate-100
+								border-slate-300/50 dark:border-white/10
+							"
 						/>
 
 						{showAuto && searchText && (
-							<div className="absolute left-0 right-0 mt-1 z-50 bg-white dark:bg-[#0b1220] border rounded-xl shadow-xl">
+							<div className="absolute left-0 right-0 mt-1 z-50 bg-white dark:bg-[#0b1220] border border-slate-200 dark:border-white/10 rounded-xl shadow-xl overflow-hidden">
 								{suggestionsList
 									.filter((s) =>
 										s.toLowerCase().includes(searchText.toLowerCase()),
@@ -259,7 +308,7 @@ export const HeroSection = () => {
 						)}
 					</div>
 
-					{/* DESKTOP FILTERS */}
+					{/* Desktop filters */}
 					<div className="hidden md:flex gap-3">
 						{activeTab === 'rent' && (
 							<>
@@ -313,18 +362,26 @@ export const HeroSection = () => {
 						)}
 					</div>
 
+					{/* Search Button */}
 					<button
 						onClick={handleSearch}
-						className="h-11 px-8 bg-teal-600 text-white rounded-xl flex items-center justify-center gap-2"
+						className="
+							h-10 sm:h-11
+							px-6 sm:px-8
+							bg-teal-600 text-white
+							rounded-xl
+							flex items-center justify-center gap-2
+							text-sm sm:text-base
+						"
 					>
 						<Search className="w-4 h-4" />
 						Search
 					</button>
 
-					{/* ✅ MOBILE FILTERS (2 in 1 row) */}
+					{/* Mobile filters */}
 					<div className="md:hidden">
 						{activeTab === 'rent' && (
-							<div className="grid grid-cols-2 gap-3 mt-3">
+							<div className="grid grid-cols-2 gap-2 mt-2">
 								<Dropdown
 									label="Home Type"
 									value={homeType}
@@ -341,7 +398,7 @@ export const HeroSection = () => {
 						)}
 
 						{activeTab === 'buy' && (
-							<div className="grid grid-cols-2 gap-3 mt-3">
+							<div className="grid grid-cols-2 gap-2 mt-2">
 								<Dropdown
 									label="Budget"
 									value={budget}
@@ -358,7 +415,7 @@ export const HeroSection = () => {
 						)}
 
 						{activeTab === 'pre' && (
-							<div className="grid grid-cols-2 gap-3 mt-3">
+							<div className="grid grid-cols-2 gap-2 mt-2">
 								<Dropdown
 									label="Unit Type"
 									value={unitType}
