@@ -60,7 +60,7 @@ const amenityBgMap = {
 		'bg-purple-50 dark:bg-purple-900/20 border-purple-200 dark:border-purple-800',
 };
 
-/* ---------- AMENITIES PARSER (ULTRA SAFE FIX) ---------- */
+/* ---------- AMENITIES PARSER  ---------- */
 const parseAmenities = (amenitiesArray = []) => {
 	const base = {
 		House: [],
@@ -75,10 +75,10 @@ const parseAmenities = (amenitiesArray = []) => {
 
 	let raw = amenitiesArray[0];
 
-	// 🧨 CASE: amenities stored as STRING
+	// CASE: amenities stored as STRING
 	if (typeof raw === 'string') {
 		try {
-			// 🔧 Fix invalid JSON (single quotes + unquoted keys)
+			//  Fix invalid JSON (single quotes + unquoted key
 			raw = raw
 				.replace(/'/g, '"') // single → double quotes
 				.replace(/(\w+)\s*:/g, '"$1":'); // House: → "House":
