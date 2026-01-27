@@ -22,7 +22,7 @@ router = APIRouter(
 )
 
 # -----------------------
-# EXISTING PROPERTY APIs (UNCHANGED)
+# EXISTING PROPERTY APIs 
 # -----------------------
 
 @router.post("/", response_model=Property)
@@ -103,7 +103,7 @@ async def add_images(
     return {"message": "Images added", "images": updated}
 
 # -----------------------
-# STEP 3 — MEDIA UPLOAD (NEW, SAFE)
+# MEDIA UPLOAD 
 # -----------------------
 
 ALLOWED_IMAGE_TYPES = {"image/jpeg", "image/png", "image/webp"}
