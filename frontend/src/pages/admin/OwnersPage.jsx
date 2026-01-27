@@ -45,7 +45,7 @@ import {
 import { cn } from '@/lib/utils';
 import { toast } from 'sonner';
 import { format } from 'date-fns';
-import api from '@/lib/api'; // ✅ IMPORTANT
+import api from '@/lib/api'; 
 
 const OwnersPage = () => {
   const [owners, setOwners] = useState([]);
@@ -74,7 +74,7 @@ const OwnersPage = () => {
       const response = await api.get('/owners');
       setOwners(response.data || []);
     } catch (error) {
-      // ✅ NOT an error if backend has no owners yet
+      //  NOT an error if backend has no owners yet
       console.warn('Owners not available yet');
       setOwners([]);
     } finally {
