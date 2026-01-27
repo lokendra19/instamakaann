@@ -43,7 +43,7 @@ import {
 import { cn } from '@/lib/utils';
 import { toast } from 'sonner';
 import PropertyPreviewDrawer from '@/components/admin/PropertyPreviewDrawer';
-import api from '@/lib/api'; // ✅ IMPORTANT
+import api from '@/lib/api'; 
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 
