@@ -43,13 +43,13 @@ router = APIRouter(
 @router.post("/", response_model=Inquiry)
 @limiter.limit("10/minute")
 async def create(
-    request: Request,        # ✅ required by slowapi
+    request: Request,        
     data: InquiryCreate
 ):
     return await create_inquiry(data)
 
 # -----------------------
-# ADMIN / AGENT INQUIRIES (UNCHANGED)
+# ADMIN / AGENT INQUIRIES 
 # -----------------------
 
 @router.get("/", response_model=List[Inquiry])
