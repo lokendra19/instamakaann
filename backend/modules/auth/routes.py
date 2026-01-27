@@ -19,18 +19,18 @@ ACCESS_TOKEN_EXPIRE_MINUTES = 60
 router = APIRouter(prefix="/auth", tags=["Auth"])
 
 # ===============================
-# IN-MEMORY USERS (TEMP DEV)
+# IN-MEMORY USERS (TEMP)
 # ===============================
 _fake_users: Dict[str, dict] = {}
 _fake_refresh_tokens: Dict[str, str] = {}
 
 # ===============================
-# SEED ADMIN (PLAIN PASSWORD – TEMP)
+# SEED ADMIN ( TEMP)
 # ===============================
 _fake_users["admin@instamakaan.com"] = {
     "id": "admin-1",
     "email": "admin@instamakaan.com",
-    "password": "admin123",   # ✅ PLAIN (TEMP)
+    "password": "admin123",   
     "role": "ADMIN",
     "created_at": datetime.utcnow()
 }
@@ -64,7 +64,7 @@ def register(payload: UserCreate):
     _fake_users[payload.email] = {
         "id": str(uuid.uuid4()),
         "email": payload.email,
-        "password": payload.password,  # ✅ PLAIN (TEMP)
+        "password": payload.password,  
         "role": "USER",
         "created_at": datetime.utcnow()
     }
