@@ -34,7 +34,7 @@ router = APIRouter(prefix="/leads", tags=["Leads"])
 @router.post("/tenant", response_model=LeadResponse)
 @limiter.limit("10/minute")
 def create_tenant_lead(
-    request: Request,          # ✅ required by slowapi
+    request: Request,          
     payload: TenantLeadCreate
 ):
     lead, error = service.create_tenant_lead(payload.dict())
@@ -46,7 +46,7 @@ def create_tenant_lead(
 @router.post("/owner", response_model=LeadResponse)
 @limiter.limit("10/minute")
 def create_owner_lead(
-    request: Request,          # ✅ required by slowapi
+    request: Request,          
     payload: OwnerLeadCreate
 ):
     lead, error = service.create_owner_lead(payload.dict())
@@ -59,7 +59,7 @@ def create_owner_lead(
     }
 
 # -----------------------
-# ADMIN LEADS (UNCHANGED)
+# ADMIN LEADS 
 # -----------------------
 
 @router.get(
