@@ -1,9 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { PropertyCard } from './PropertyCard';
 import { Link } from 'react-router-dom';
-
-const BACKEND_URL =
-	process.env.REACT_APP_BACKEND_URL || 'http://127.0.0.1:8000';
+import api from '@/lib/api';
 
 export const PropertiesSection = () => {
 	const [properties, setProperties] = useState([]);
@@ -13,10 +11,8 @@ export const PropertiesSection = () => {
 	useEffect(() => {
 		const fetchProperties = async () => {
 			try {
-				const res = await fetch(`${BACKEND_URL}/api/properties/`);
-				if (!res.ok) throw new Error('Failed to load properties');
-				const data = await res.json();
-				setProperties(data || []);
+				const res = await api.get('/properties');
+				setProperties(res.data || []);
 			} catch (err) {
 				setError('No properties found');
 			} finally {
@@ -64,12 +60,12 @@ export const PropertiesSection = () => {
 					<Link
 						to="/all-properties"
 						className="
-							text-sm px-4 py-2 rounded-lg
-							border border-teal-500/40
-							text-teal-600 dark:text-teal-400
-							hover:bg-teal-500/10
-							transition
-						"
+              text-sm px-4 py-2 rounded-lg
+              border border-teal-500/40
+              text-teal-600 dark:text-teal-400
+              hover:bg-teal-500/10
+              transition
+            "
 					>
 						View All Properties
 					</Link>

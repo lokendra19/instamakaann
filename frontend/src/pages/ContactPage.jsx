@@ -27,7 +27,7 @@ import {
 } from 'lucide-react';
 import { toast } from 'sonner';
 
-const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
+const API_BASE = process.env.REACT_APP_API_URL || 'http://127.0.0.1:8000/api';
 
 const contactInfo = [
 	{
@@ -107,7 +107,7 @@ const ContactPage = () => {
 		setSubmitting(true);
 
 		try {
-			const response = await fetch(`${BACKEND_URL}/api/inquiries`, {
+			const response = await fetch(`${API_BASE}/inquiries/`, {
 				method: 'POST',
 				headers: { 'Content-Type': 'application/json' },
 				body: JSON.stringify({
@@ -116,7 +116,8 @@ const ContactPage = () => {
 					phone: formData.phone,
 					subject: formData.subject,
 					message: formData.message,
-					inquiry_type: 'general',
+					inquiry_type: formData.subject || 'GENERAL',
+					source_page: window.location.pathname, // 👈 Dost ka tracking field
 				}),
 			});
 
@@ -142,7 +143,7 @@ const ContactPage = () => {
 
 	return (
 		<Layout>
-			{/* ✅ PREMIUM HERO HEADER */}
+			{/* HERO */}
 			<section className="relative overflow-hidden py-12 md:py-16 -mt-8">
 				<div className="absolute inset-0 -z-10 bg-gradient-to-br from-teal-50 via-white to-yellow-50 dark:from-[#0b1220] dark:via-[#0b1220] dark:to-[#102536]" />
 				<div className="absolute -top-24 -left-24 w-80 h-80 bg-teal-400/20 blur-3xl rounded-full -z-10" />
@@ -157,7 +158,7 @@ const ContactPage = () => {
 						any inquiries.
 					</p>
 
-					{/* ✅ TRUST BADGES */}
+					{/* TRUST BADGES */}
 					<div className="mt-7 flex flex-col sm:flex-row justify-center gap-3 sm:gap-4">
 						{trustBadges.map((b) => (
 							<div
@@ -179,13 +180,14 @@ const ContactPage = () => {
 				</div>
 			</section>
 
-			{/* ✅ CONTACT SECTION */}
+			{/* CONTACT SECTION */}
 			<section className="py-10 md:py-16">
 				<div className="container-custom overflow-visible">
 					<div className="grid lg:grid-cols-3 gap-8 items-start">
-						{/* ✅ LEFT: Sticky Contact Info + Map */}
+						{/* LEFT SIDE */}
 						<div className="lg:col-span-1">
 							<div className="space-y-6">
+								{/* CONTACT INFO */}
 								<div>
 									<h2 className="text-xl font-semibold text-foreground mb-4">
 										Contact Information
@@ -238,7 +240,7 @@ const ContactPage = () => {
 									</div>
 								</div>
 
-								{/* ✅ MAP */}
+								{/* MAP */}
 								<Card className="bg-card border-0 shadow-card overflow-hidden rounded-3xl">
 									<div className="relative aspect-[4/3]">
 										<iframe
@@ -254,7 +256,7 @@ const ContactPage = () => {
 							</div>
 						</div>
 
-						{/* ✅ RIGHT: Sticky on Desktop */}
+						{/* RIGHT SIDE - FORM */}
 						<div className="lg:col-span-2 lg:sticky lg:top-24 h-fit">
 							<Card className="bg-card border-0 shadow-elevated overflow-hidden rounded-3xl">
 								<CardContent className="p-6 md:p-10 relative">
@@ -412,7 +414,7 @@ const ContactPage = () => {
 								</CardContent>
 							</Card>
 
-							{/* ✅ MINI FAQ SECTION */}
+							{/* FAQs */}
 							<div className="mt-10">
 								<h2 className="text-2xl font-bold text-foreground mb-4">
 									Quick FAQs
@@ -422,38 +424,35 @@ const ContactPage = () => {
 								</p>
 
 								<div className="space-y-3">
-									{faqs.map((item, i) => {
-										const isOpen = openFaq === i;
-										return (
-											<Card
-												key={item.q}
-												className="bg-card border-0 shadow-card rounded-3xl overflow-hidden"
+									{faqs.map((item, i) => (
+										<Card
+											key={item.q}
+											className="bg-card border-0 shadow-card rounded-3xl overflow-hidden"
+										>
+											<button
+												type="button"
+												onClick={() => setOpenFaq(openFaq === i ? null : i)}
+												className="w-full text-left"
 											>
-												<button
-													type="button"
-													onClick={() => setOpenFaq(isOpen ? null : i)}
-													className="w-full text-left"
-												>
-													<CardContent className="p-5 flex items-center justify-between gap-4">
-														<p className="font-semibold text-foreground">
-															{item.q}
-														</p>
-														<ChevronDown
-															className={`w-5 h-5 transition-transform ${
-																isOpen ? 'rotate-180' : ''
-															}`}
-														/>
-													</CardContent>
-												</button>
+												<CardContent className="p-5 flex items-center justify-between gap-4">
+													<p className="font-semibold text-foreground">
+														{item.q}
+													</p>
+													<ChevronDown
+														className={`w-5 h-5 transition-transform ${
+															openFaq === i ? 'rotate-180' : ''
+														}`}
+													/>
+												</CardContent>
+											</button>
 
-												{isOpen && (
-													<div className="px-5 pb-5 text-sm text-muted-foreground leading-relaxed">
-														{item.a}
-													</div>
-												)}
-											</Card>
-										);
-									})}
+											{openFaq === i && (
+												<div className="px-5 pb-5 text-sm text-muted-foreground leading-relaxed">
+													{item.a}
+												</div>
+											)}
+										</Card>
+									))}
 								</div>
 							</div>
 						</div>

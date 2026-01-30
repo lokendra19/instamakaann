@@ -18,7 +18,7 @@ import CustomIcon from '@/components/CustomIcon';
 const LoginPage = () => {
 	const navigate = useNavigate();
 	const location = useLocation();
-	const { login, isAuthenticated, loading: authLoading } = useAuth();
+	const { login, isAuthenticated, user, loading: authLoading } = useAuth();
 
 	const [email, setEmail] = useState('');
 	const [password, setPassword] = useState('');
@@ -26,13 +26,50 @@ const LoginPage = () => {
 	const [loading, setLoading] = useState(false);
 	const [error, setError] = useState('');
 
-	const from = location.state?.from?.pathname || '/admin';
+	// only used when redirected from ProtectedRoute
+	const from = location.state?.from?.pathname;
 
+	/* =========================================================
+     Clear stale auth state when opening login page
+     ========================================================= */
 	useEffect(() => {
-		if (isAuthenticated && !authLoading) {
-			navigate(from, { replace: true });
+		localStorage.removeItem('instamakaan_user');
+		localStorage.removeItem('instamakaan_token');
+	}, []);
+
+	/* =========================================================
+     Prevent auto-redirect while on /auth/login
+     ========================================================= */
+	useEffect(() => {
+		if (
+			isAuthenticated &&
+			user &&
+			!authLoading &&
+			location.pathname !== '/auth/login'
+		) {
+			redirectByRole(user.role);
 		}
-	}, [isAuthenticated, authLoading, navigate, from]);
+	}, [isAuthenticated, authLoading]);
+
+	/* ================= ROLE BASED REDIRECT ================= */
+
+	const redirectByRole = (role) => {
+		switch (role) {
+			case 'ADMIN':
+				navigate('/admin', { replace: true });
+				break;
+			case 'OWNER':
+				navigate('/owner', { replace: true });
+				break;
+			case 'AGENT':
+				navigate('/agent', { replace: true });
+				break;
+			case 'USER':
+			default:
+				navigate('/', { replace: true });
+				break;
+		}
+	};
 
 	/* ================= LOGIN HANDLER ================= */
 	const handleSubmit = async (e) => {
@@ -40,22 +77,29 @@ const LoginPage = () => {
 		setError('');
 		setLoading(true);
 
+		console.log('LOGIN SUBMIT CLICKED');
+
 		if (!email || !password) {
 			setError('Please enter email and password');
 			setLoading(false);
 			return;
 		}
 
-		// ✅ NORMAL LOGIN – ADMIN ROLE BACKEND SE AAYEGA
 		const result = await login(email, password);
 
 		if (result.success) {
-			toast.success(`Welcome back, ${result.user.name}`);
-			navigate(from, { replace: true });
+			toast.success('Welcome back');
+			redirectByRole(result.user.role);
 		} else {
-			setError(result.error || 'Invalid credentials');
+			if (result.needsVerification) {
+				toast.warning('Please verify your email to continue');
+				navigate('/auth/verify-email', {
+					state: { email },
+				});
+			} else {
+				setError(result.error || 'Invalid credentials');
+			}
 		}
-
 		setLoading(false);
 	};
 
@@ -76,7 +120,6 @@ const LoginPage = () => {
 			/>
 			<div className="absolute inset-0 bg-white/80 backdrop-blur-md" />
 
-			{/* Card */}
 			<div className="relative z-10 w-full max-w-md animate-in fade-in zoom-in duration-500">
 				{/* Logo */}
 				<div className="text-center mb-6">
@@ -88,21 +131,15 @@ const LoginPage = () => {
 						/>
 						<div className="text-left leading-tight">
 							<p className="text-lg font-bold text-teal-600">Insta</p>
-							<p className="text-lg font-bold text-yellow-500 -mt-1">
-								Makaan
-							</p>
+							<p className="text-lg font-bold text-yellow-500 -mt-1">Makaan</p>
 						</div>
 					</Link>
 				</div>
 
 				<Card className="bg-white/90 backdrop-blur border-0 shadow-xl">
 					<CardHeader className="text-center">
-						<CardTitle className="text-2xl font-bold">
-							Welcome Back
-						</CardTitle>
-						<CardDescription>
-							Sign in to access your dashboard
-						</CardDescription>
+						<CardTitle className="text-2xl font-bold">Welcome Back</CardTitle>
+						<CardDescription>Sign in to access your dashboard</CardDescription>
 					</CardHeader>
 
 					<CardContent>
@@ -170,12 +207,19 @@ const LoginPage = () => {
 							</Button>
 						</form>
 
+						{/*  Forgot Password */}
+						<div className="mt-4 text-center">
+							<Link
+								to="/auth/forgot-password"
+								className="text-sm text-teal-600 hover:underline"
+							>
+								Forgot password?
+							</Link>
+						</div>
+
 						<div className="mt-6 text-center text-sm">
 							Don’t have an account?{' '}
-							<Link
-								to="/auth/register"
-								className="text-teal-600 font-medium"
-							>
+							<Link to="/auth/register" className="text-teal-600 font-medium">
 								Sign up
 							</Link>
 						</div>

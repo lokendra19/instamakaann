@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import CustomIcon from '@/components/CustomIcon';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
-import { Menu, User, Sun, Moon, ChevronDown } from 'lucide-react';
+import { Menu, User, Sun, Moon, ChevronDown, LogOut, X } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import { X } from 'lucide-react';
+import { useAuth } from '@/context/AuthContext';
 
 const navLinks = [
 	{ name: 'Home', path: '/' },
@@ -24,7 +24,10 @@ export const Header = () => {
 	const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 	const [theme, setTheme] = useState('light');
 	const [openMore, setOpenMore] = useState(false);
+
 	const location = useLocation();
+	const navigate = useNavigate();
+	const { user, logout } = useAuth();
 
 	useEffect(() => {
 		const handleScroll = () => setIsScrolled(window.scrollY > 8);
@@ -47,40 +50,36 @@ export const Header = () => {
 
 	const isActive = (path) => location.pathname === path;
 
-	const toggleMore = () => {
-		setOpenMore((prev) => !prev);
+	const handleLogout = () => {
+		logout();
+		navigate('/', { replace: true });
 	};
 
 	useEffect(() => {
 		const handleClickOutside = (e) => {
-			const target = e.target;
-			if (!target.closest('.more-dropdown-container')) {
+			if (!e.target.closest('.more-dropdown-container')) {
 				setOpenMore(false);
 			}
 		};
-
 		if (openMore) {
 			document.addEventListener('mousedown', handleClickOutside);
 		}
-		return () => {
-			document.removeEventListener('mousedown', handleClickOutside);
-		};
+		return () => document.removeEventListener('mousedown', handleClickOutside);
 	}, [openMore]);
+
 	useEffect(() => {
 		if (isMobileMenuOpen) {
 			document.body.classList.add('menu-open-blur');
 		} else {
 			document.body.classList.remove('menu-open-blur');
 		}
-
 		return () => document.body.classList.remove('menu-open-blur');
 	}, [isMobileMenuOpen]);
 
 	return (
 		<header
 			className={cn(
-				'fixed top-0 left-0 right-0 z-[9999] transition-all duration-300',
-				'overflow-visible',
+				'fixed top-0 left-0 right-0 z-[9999] transition-all duration-300 overflow-visible',
 				isScrolled
 					? 'bg-white/90 dark:bg-[#0b1220]/90 backdrop-blur-xl shadow-sm'
 					: 'bg-white/80 dark:bg-[#0b1220]/75 backdrop-blur-lg',
@@ -122,7 +121,7 @@ export const Header = () => {
 						<div className="relative more-dropdown-container z-[9999]">
 							<button
 								type="button"
-								onClick={toggleMore}
+								onClick={() => setOpenMore((v) => !v)}
 								className="flex items-center gap-1 text-sm font-medium text-slate-700 dark:text-slate-300 hover:text-teal-600"
 							>
 								More
@@ -169,16 +168,32 @@ export const Header = () => {
 							)}
 						</button>
 
-						<Link
-							to="/auth/login"
-							className="flex items-center gap-1.5 px-3 py-1.5 text-sm rounded-full border dark:border-white/20"
-						>
-							<User className="w-4 h-4" />
-							Login
-						</Link>
+						{/* Auth Section */}
+						{!user ? (
+							<Link
+								to="/auth/login"
+								className="flex items-center gap-1.5 px-3 py-1.5 text-sm rounded-full border dark:border-white/20"
+							>
+								<User className="w-4 h-4" />
+								Login
+							</Link>
+						) : (
+							<div className="flex items-center gap-3">
+								<div className="w-8 h-8 rounded-full bg-teal-600 text-white flex items-center justify-center text-sm font-bold">
+									{user.email?.[0]?.toUpperCase()}
+								</div>
+								<button
+									onClick={handleLogout}
+									className="flex items-center gap-1 text-sm text-red-500 dark:text-red-400"
+								>
+									<LogOut className="w-4 h-4" />
+									Logout
+								</button>
+							</div>
+						)}
 					</div>
 
-					{/* ✅ MOBILE MENU */}
+					{/* MOBILE MENU */}
 					<div className="lg:hidden flex items-center justify-end shrink-0">
 						<Sheet open={isMobileMenuOpen} onOpenChange={setIsMobileMenuOpen}>
 							<SheetTrigger asChild>
@@ -194,7 +209,7 @@ export const Header = () => {
 								side="right"
 								className="w-[320px] p-0 dark:bg-[#0b1220] bg-white overflow-hidden h-[100dvh] max-h-[100dvh] z-[10000]"
 							>
-								{/* ✅ CUSTOM CLOSE BUTTON */}
+								{/* Custom Close Button */}
 								<button
 									type="button"
 									onClick={() => setIsMobileMenuOpen(false)}
@@ -266,20 +281,32 @@ export const Header = () => {
 
 										{/* Actions */}
 										<div className="pt-2 space-y-3 pb-8">
+											{!user ? (
+												<Link
+													to="/auth/login"
+													onClick={() => setIsMobileMenuOpen(false)}
+													className="block w-full text-center px-4 py-3 rounded-2xl bg-teal-600 text-white font-semibold shadow"
+												>
+													Login
+												</Link>
+											) : (
+												<button
+													onClick={() => {
+														handleLogout();
+														setIsMobileMenuOpen(false);
+													}}
+													className="block w-full text-center px-4 py-3 rounded-2xl bg-red-600 text-white font-semibold shadow"
+												>
+													Logout
+												</button>
+											)}
+
 											<Link
 												to="/contact"
 												onClick={() => setIsMobileMenuOpen(false)}
-												className="block w-full text-center px-4 py-3 rounded-2xl bg-teal-600 text-white font-semibold shadow"
-											>
-												Contact Us
-											</Link>
-
-											<Link
-												to="/auth/login"
-												onClick={() => setIsMobileMenuOpen(false)}
 												className="block w-full text-center px-4 py-3 rounded-2xl border dark:border-white/10 bg-white/60 dark:bg-white/5 font-semibold"
 											>
-												Login
+												Contact Us
 											</Link>
 										</div>
 									</div>

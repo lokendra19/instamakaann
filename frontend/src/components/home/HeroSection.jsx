@@ -1,16 +1,7 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect, useMemo } from 'react';
 import { Search, MapPin, ChevronDown } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
-
-/* ---------- AUTOCOMPLETE (TEMP STATIC) ---------- */
-const suggestionsList = [
-	'Sector 62 Noida',
-	'Sector 137 Noida',
-	'Alpha 1 Greater Noida',
-	'Pari Chowk',
-	'Knowledge Park',
-	'Noida Extension',
-];
+import api from '@/lib/api';
 
 /* ---------- DROPDOWN ---------- */
 const Dropdown = ({ icon: Icon, label, value, setValue, options }) => {
@@ -68,7 +59,6 @@ const Dropdown = ({ icon: Icon, label, value, setValue, options }) => {
 						overflow-hidden
 						py-1
 					"
-					/* ✅ Height fixed so only ~3 options show, rest scroll */
 					style={{ maxHeight: '132px' }}
 				>
 					<div className="max-h-[132px] overflow-y-auto">
@@ -102,14 +92,21 @@ export const HeroSection = () => {
 
 	const [activeTab, setActiveTab] = useState('rent');
 	const [city, setCity] = useState('Noida');
+
+	// ✅ search input
 	const [searchText, setSearchText] = useState('');
 	const [showAuto, setShowAuto] = useState(false);
 
+	// ✅ filters
 	const [bhk, setBhk] = useState('');
 	const [budget, setBudget] = useState('');
 	const [homeType, setHomeType] = useState('');
 	const [unitType, setUnitType] = useState('');
 	const [moveIn, setMoveIn] = useState('');
+
+	// ✅ API properties (for autocomplete)
+	const [allProperties, setAllProperties] = useState([]);
+	const [loadingSuggestions, setLoadingSuggestions] = useState(false);
 
 	const bgImages = {
 		rent: '/images/hero-rent.jpg',
@@ -130,7 +127,63 @@ export const HeroSection = () => {
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [activeTab]);
 
-	const handleSearch = async () => {
+	// ✅ Fetch properties once for autocomplete suggestions
+	useEffect(() => {
+		let mounted = true;
+
+		const load = async () => {
+			try {
+				setLoadingSuggestions(true);
+				const res = await api.get('/properties/');
+				if (!mounted) return;
+				setAllProperties(Array.isArray(res.data) ? res.data : []);
+			} catch (err) {
+				console.error('Autocomplete properties load failed:', err);
+			} finally {
+				if (mounted) setLoadingSuggestions(false);
+			}
+		};
+
+		load();
+
+		return () => {
+			mounted = false;
+		};
+	}, []);
+
+	// ✅ Build suggestions from API data (title + location + sector)
+	const suggestionsList = useMemo(() => {
+		const list = [];
+
+		for (const p of allProperties) {
+			const title = String(p?.title ?? '').trim();
+			const location = String(p?.location ?? '').trim();
+			const sector = String(p?.sector ?? '').trim();
+
+			if (title) list.push(title);
+			if (location) list.push(location);
+			if (sector) list.push(sector);
+		}
+
+		// unique + clean
+		const unique = Array.from(new Set(list))
+			.map((x) => x.replace(/\s+/g, ' ').trim())
+			.filter(Boolean);
+
+		return unique;
+	}, [allProperties]);
+
+	// ✅ filtered suggestions based on input
+	const filteredSuggestions = useMemo(() => {
+		const q = searchText.trim().toLowerCase();
+		if (!q) return [];
+
+		return suggestionsList
+			.filter((s) => s.toLowerCase().includes(q))
+			.slice(0, 6);
+	}, [searchText, suggestionsList]);
+
+	const handleSearch = () => {
 		const params = new URLSearchParams({
 			tab: activeTab,
 			city,
@@ -142,15 +195,8 @@ export const HeroSection = () => {
 			moveIn,
 		});
 
-		navigate(`/search?${params.toString()}`);
-
-		try {
-			await fetch(
-				`${process.env.REACT_APP_BACKEND_URL}/api/properties?${params.toString()}`,
-			);
-		} catch (e) {
-			console.error(e);
-		}
+		// ✅ redirect to AllProperties page (change this path if yours is different)
+		navigate(`/all-properties?${params.toString()}`);
 	};
 
 	return (
@@ -164,7 +210,7 @@ export const HeroSection = () => {
 			{/* OVERLAY */}
 			<div className="absolute inset-0 bg-gradient-to-b from-white/70 via-white/60 to-white/80 dark:from-[#0b1220]/90 dark:via-[#0b1220]/85 dark:to-[#0b1220]/95" />
 
-			{/* ✅ TABS (Smaller in Mobile) */}
+			{/* ✅ TABS */}
 			<div className="absolute top-16 sm:top-36 left-1/2 -translate-x-1/2 z-20 w-full px-4">
 				<div className="flex justify-center">
 					<div
@@ -189,7 +235,11 @@ export const HeroSection = () => {
 									text-[12px] sm:text-sm
 									leading-none
 									transition
-									${activeTab === tab ? 'bg-teal-600 text-white' : 'text-slate-700 dark:text-slate-200'}
+									${
+										activeTab === tab
+											? 'bg-teal-600 text-white'
+											: 'text-slate-700 dark:text-slate-200'
+									}
 								`}
 							>
 								{tab === 'rent'
@@ -272,6 +322,7 @@ export const HeroSection = () => {
 								setSearchText(e.target.value);
 								setShowAuto(true);
 							}}
+							onFocus={() => setShowAuto(true)}
 							onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
 							placeholder="Search locality / society / landmark"
 							className="
@@ -285,14 +336,15 @@ export const HeroSection = () => {
 							"
 						/>
 
+						{/* ✅ AUTOCOMPLETE */}
 						{showAuto && searchText && (
 							<div className="absolute left-0 right-0 mt-1 z-50 bg-white dark:bg-[#0b1220] border border-slate-200 dark:border-white/10 rounded-xl shadow-xl overflow-hidden">
-								{suggestionsList
-									.filter((s) =>
-										s.toLowerCase().includes(searchText.toLowerCase()),
-									)
-									.slice(0, 5)
-									.map((s) => (
+								{loadingSuggestions ? (
+									<div className="px-4 py-2 text-sm text-slate-500">
+										Loading...
+									</div>
+								) : filteredSuggestions.length ? (
+									filteredSuggestions.map((s) => (
 										<div
 											key={s}
 											onClick={() => {
@@ -303,7 +355,12 @@ export const HeroSection = () => {
 										>
 											{s}
 										</div>
-									))}
+									))
+								) : (
+									<div className="px-4 py-2 text-sm text-slate-500">
+										No matches found
+									</div>
+								)}
 							</div>
 						)}
 					</div>
@@ -322,7 +379,7 @@ export const HeroSection = () => {
 									label="BHK"
 									value={bhk}
 									setValue={setBhk}
-									options={['1RK', '1BHK', '2BHK', '3BHK', '4BHK+']}
+									options={['1', '2', '3', '4', '5+']}
 								/>
 							</>
 						)}
@@ -339,7 +396,7 @@ export const HeroSection = () => {
 									label="BHK"
 									value={bhk}
 									setValue={setBhk}
-									options={['1', '2', '3', '4+']}
+									options={['1', '2', '3', '4', '5+']}
 								/>
 							</>
 						)}
@@ -392,7 +449,7 @@ export const HeroSection = () => {
 									label="BHK"
 									value={bhk}
 									setValue={setBhk}
-									options={['1RK', '1BHK', '2BHK', '3BHK', '4BHK+']}
+									options={['1', '2', '3', '4', '5+']}
 								/>
 							</div>
 						)}
@@ -409,7 +466,7 @@ export const HeroSection = () => {
 									label="BHK"
 									value={bhk}
 									setValue={setBhk}
-									options={['1', '2', '3', '4+']}
+									options={['1', '2', '3', '4', '5+']}
 								/>
 							</div>
 						)}
@@ -432,6 +489,14 @@ export const HeroSection = () => {
 						)}
 					</div>
 				</div>
+
+				{/* ✅ Tap outside close autocomplete */}
+				{showAuto && (
+					<div
+						className="fixed inset-0 z-[1]"
+						onClick={() => setShowAuto(false)}
+					/>
+				)}
 			</div>
 		</section>
 	);

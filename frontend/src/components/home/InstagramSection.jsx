@@ -45,7 +45,7 @@ export const InstagramSection = () => {
         bg-white dark:bg-neutral-950
       "
 		>
-			<div className="container-custom">
+			<div className="container-custom px-4 sm:px-6">
 				{/* HEADER */}
 				<div className="text-center mb-10 md:mb-12">
 					<h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-4">
@@ -58,7 +58,7 @@ export const InstagramSection = () => {
 				</div>
 
 				{/* GRID */}
-				<div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+				<div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
 					{instagramPosts.map((post, i) => (
 						<a
 							key={post.id}
@@ -73,6 +73,7 @@ export const InstagramSection = () => {
                 transition-all duration-500
                 hover:scale-[1.04]
                 hover:shadow-xl
+                active:scale-[0.98]
               "
 						>
 							<img
@@ -83,6 +84,7 @@ export const InstagramSection = () => {
                   transition-transform duration-500
                   group-hover:scale-110
                 "
+								loading="lazy"
 							/>
 
 							{/* Overlay */}
@@ -120,12 +122,17 @@ export const InstagramSection = () => {
 
 				{/* CTA */}
 				<div className="text-center mt-8">
-					<Button variant="yellow" size="lg" asChild>
+					<Button
+						variant="yellow"
+						size="lg"
+						asChild
+						className="w-full sm:w-auto justify-center"
+					>
 						<a
 							href="https://instagram.com/instamakaan"
 							target="_blank"
 							rel="noopener noreferrer"
-							className="flex items-center"
+							className="flex items-center justify-center"
 						>
 							<Instagram className="w-5 h-5 mr-2" />
 							Follow us on Instagram @InstaMakaan

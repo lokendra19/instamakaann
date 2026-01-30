@@ -6,9 +6,6 @@ import {
 	MapPin,
 	ChevronLeft,
 	ChevronRight,
-	IndianRupee,
-	Wallet,
-	BadgeCheck,
 	CalendarDays,
 	CheckCircle,
 	Home,
@@ -60,7 +57,7 @@ const amenityBgMap = {
 		'bg-purple-50 dark:bg-purple-900/20 border-purple-200 dark:border-purple-800',
 };
 
-/* ---------- AMENITIES PARSER (ULTRA SAFE FIX) ---------- */
+/* ---------- AMENITIES PARSER ---------- */
 const parseAmenities = (amenitiesArray = []) => {
 	const base = {
 		House: [],
@@ -75,13 +72,9 @@ const parseAmenities = (amenitiesArray = []) => {
 
 	let raw = amenitiesArray[0];
 
-	// 🧨 CASE: amenities stored as STRING
 	if (typeof raw === 'string') {
 		try {
-			// 🔧 Fix invalid JSON (single quotes + unquoted keys)
-			raw = raw
-				.replace(/'/g, '"') // single → double quotes
-				.replace(/(\w+)\s*:/g, '"$1":'); // House: → "House":
+			raw = raw.replace(/'/g, '"').replace(/(\w+)\s*:/g, '"$1":');
 
 			raw = JSON.parse(raw);
 		} catch (err) {
@@ -96,7 +89,6 @@ const parseAmenities = (amenitiesArray = []) => {
 		if (typeof block === 'object' && block !== null) {
 			Object.entries(block).forEach(([section, items]) => {
 				const cleanSection = section.trim();
-
 				if (base[cleanSection] && Array.isArray(items)) {
 					base[cleanSection] = items;
 				}
@@ -106,28 +98,71 @@ const parseAmenities = (amenitiesArray = []) => {
 
 	return base;
 };
+
 const PropertyDetailPage = () => {
 	const { id } = useParams();
 	const [property, setProperty] = useState(null);
 	const [related, setRelated] = useState([]);
 	const [index, setIndex] = useState(0);
 
+	// schedule visit fields
+	const [visitName, setVisitName] = useState('');
+	const [visitPhone, setVisitPhone] = useState('');
+	const [visitDate, setVisitDate] = useState('');
+	const [whatsappOptIn, setWhatsappOptIn] = useState(false);
+	const [visitLoading, setVisitLoading] = useState(false);
+
+	/* ---------- LOAD PROPERTY ---------- */
 	useEffect(() => {
 		const load = async () => {
 			const res = await fetch(
-				`${process.env.REACT_APP_BACKEND_URL}/api/properties/${id}`,
+				`${process.env.REACT_APP_API_URL}/properties/${id}`,
 			);
 			const data = await res.json();
 			setProperty(data);
 
 			const listRes = await fetch(
-				`${process.env.REACT_APP_BACKEND_URL}/api/properties`,
+				`${process.env.REACT_APP_API_URL}/properties`,
 			);
 			const list = await listRes.json();
 			setRelated(list.filter((p) => p.id !== data.id).slice(0, 2));
 		};
 		load();
 	}, [id]);
+
+	/* ---------- SUBMIT VISIT INQUIRY ---------- */
+	const submitInquiry = async () => {
+		if (!visitName || !visitPhone || !visitDate) {
+			alert('Please fill all fields');
+			return;
+		}
+
+		setVisitLoading(true);
+		try {
+			await fetch(`${process.env.REACT_APP_API_URL}/inquiries`, {
+				method: 'POST',
+				headers: { 'Content-Type': 'application/json' },
+				body: JSON.stringify({
+					name: visitName,
+					phone: visitPhone,
+					listing_id: property.id,
+					whatsapp_opt_in: whatsappOptIn,
+					inquiry_type: 'TENANT',
+					source_page: window.location.pathname,
+				}),
+			});
+
+			alert('Visit scheduled successfully');
+			setVisitName('');
+			setVisitPhone('');
+			setVisitDate('');
+			setWhatsappOptIn(false);
+		} catch {
+			alert('Failed to submit inquiry');
+		} finally {
+			setVisitLoading(false);
+		}
+	};
 
 	if (!property) {
 		return (
@@ -138,23 +173,20 @@ const PropertyDetailPage = () => {
 			</Layout>
 		);
 	}
-	// ---------- RENT CALCULATION (FIXED LOGIC) ----------
+
+	/* ---------- RENT DETAILS ---------- */
 	const monthlyRent = toNumber(property.price);
-
-	// 2 months deposit
 	const securityDeposit = monthlyRent * 2;
-
-	// 15 days = half month
 	const oneTimeFees = monthlyRent / 2;
-
-	// total payable
 	const totalPayable = monthlyRent + securityDeposit + oneTimeFees;
 
+	/* ---------- IMAGES ---------- */
 	const images =
 		Array.isArray(property.images) && property.images.length > 0
 			? property.images
 			: ['https://via.placeholder.com/1200x600'];
 
+	/* ---------- AMENITIES ---------- */
 	const amenities = parseAmenities(property.amenities);
 
 	return (
@@ -172,14 +204,12 @@ const PropertyDetailPage = () => {
 					</div>
 
 					{/* GALLERY */}
-					{/* ADVANCED GALLERY */}
 					<div className="space-y-4">
 						{/* MAIN IMAGE */}
 						<div className="relative h-[420px] rounded-2xl overflow-hidden shadow group">
 							<img
 								src={images[index]}
 								className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-								alt="Property"
 							/>
 
 							{/* LEFT ARROW */}
@@ -188,8 +218,7 @@ const PropertyDetailPage = () => {
 									setIndex(index === 0 ? images.length - 1 : index - 1)
 								}
 								className="absolute left-4 top-1/2 -translate-y-1/2 
-			bg-white/80 backdrop-blur p-2 rounded-full shadow 
-			hover:scale-110 transition"
+									bg-white/80 backdrop-blur p-2 rounded-full shadow hover:scale-110 transition"
 							>
 								<ChevronLeft />
 							</button>
@@ -197,31 +226,25 @@ const PropertyDetailPage = () => {
 							{/* RIGHT ARROW */}
 							<button
 								onClick={() => setIndex((index + 1) % images.length)}
-								className="absolute right-4 top-1/2 -translate-y-1/2 
-			bg-white/80 backdrop-blur p-2 rounded-full shadow 
-			hover:scale-110 transition"
+								className="absolute right-4 top-1/2 -translate-y-1/2
+									bg-white/80 backdrop-blur p-2 rounded-full shadow hover:scale-110 transition"
 							>
 								<ChevronRight />
 							</button>
 						</div>
 
-						{/* THUMBNAILS (MAX 3, SAFE) */}
+						{/* THUMBNAILS */}
 						<div className="grid grid-cols-3 gap-4">
 							{images.slice(0, 3).map((img, i) => (
 								<button
 									key={i}
 									onClick={() => setIndex(i)}
 									className={`relative h-40 rounded-xl overflow-hidden border-2 
-				${index === i ? 'border-amber-500' : 'border-transparent'}
-				hover:scale-[1.03] transition`}
+										${index === i ? 'border-amber-500' : 'border-transparent'}
+										hover:scale-[1.03] transition`}
 								>
-									<img
-										src={img}
-										className="w-full h-full object-cover"
-										alt="Thumbnail"
-									/>
+									<img src={img} className="w-full h-full object-cover" />
 
-									{/* OVERLAY FOR EXTRA IMAGES */}
 									{i === 2 && images.length > 3 && (
 										<div className="absolute inset-0 bg-black/50 flex items-center justify-center text-white text-lg font-semibold">
 											+{images.length - 3}
@@ -232,7 +255,7 @@ const PropertyDetailPage = () => {
 						</div>
 					</div>
 
-					{/* PROPERTY DESCRIPTION */}
+					{/* DESCRIPTION */}
 					<h2 className="text-2xl font-bold">Description</h2>
 
 					<div className="bg-white dark:bg-neutral-900 rounded-2xl shadow p-6">
@@ -240,6 +263,7 @@ const PropertyDetailPage = () => {
 							{property.description || 'No description available.'}
 						</p>
 					</div>
+
 					{/* AMENITIES */}
 					<h2 className="text-2xl font-bold">Amenities</h2>
 
@@ -267,7 +291,7 @@ const PropertyDetailPage = () => {
 						))}
 					</div>
 
-					{/* RENT DETAILS / PRICE BREAKUP */}
+					{/* RENT DETAILS */}
 					<h2 className="text-2xl font-bold mt-12">Rent Details</h2>
 
 					<div className="bg-white dark:bg-neutral-900 rounded-2xl shadow p-6 space-y-6">
@@ -299,14 +323,12 @@ const PropertyDetailPage = () => {
 						</div>
 					</div>
 				</div>
+
 				{/* RIGHT SIDEBAR */}
 				<div className="sticky top-24 self-start">
 					<div className="space-y-8">
-						{/* SCHEDULE VISIT CARD */}
-						<div
-							className="bg-white/80 dark:bg-neutral-900/80 backdrop-blur-xl rounded-3xl 
-			shadow-[0_20px_50px_-12px_rgba(0,0,0,0.25)] overflow-hidden border border-gray-100 dark:border-neutral-800"
-						>
+						{/* VISIT FORM */}
+						<div className="bg-white/80 dark:bg-neutral-900/80 backdrop-blur-xl rounded-3xl shadow-xl border border-gray-100 dark:border-neutral-800">
 							<div className="p-6 border-b dark:border-neutral-800">
 								<h3 className="font-semibold text-lg mb-5 flex items-center gap-2">
 									<CalendarDays className="text-amber-500" />
@@ -316,10 +338,10 @@ const PropertyDetailPage = () => {
 								{/* NAME */}
 								<div className="relative mb-4">
 									<input
-										className="w-full pl-11 pr-4 py-3 rounded-xl border border-gray-200 
-						dark:border-neutral-700 dark:bg-neutral-800 
-						focus:ring-2 focus:ring-amber-400 outline-none transition"
+										className="w-full pl-11 pr-4 py-3 rounded-xl border border-gray-200 dark:border-neutral-700 dark:bg-neutral-800 focus:ring-2 focus:ring-amber-400 outline-none"
 										placeholder="Your Name"
+										value={visitName}
+										onChange={(e) => setVisitName(e.target.value)}
 									/>
 									<User className="absolute left-3 top-3.5 w-5 h-5 text-gray-400" />
 								</div>
@@ -327,10 +349,10 @@ const PropertyDetailPage = () => {
 								{/* PHONE */}
 								<div className="relative mb-4">
 									<input
-										className="w-full pl-11 pr-4 py-3 rounded-xl border border-gray-200 
-						dark:border-neutral-700 dark:bg-neutral-800 
-						focus:ring-2 focus:ring-amber-400 outline-none transition"
+										className="w-full pl-11 pr-4 py-3 rounded-xl border border-gray-200 dark:border-neutral-700 dark:bg-neutral-800 focus:ring-2 focus:ring-amber-400 outline-none"
 										placeholder="Phone Number"
+										value={visitPhone}
+										onChange={(e) => setVisitPhone(e.target.value)}
 									/>
 									<Phone className="absolute left-3 top-3.5 w-5 h-5 text-gray-400" />
 								</div>
@@ -339,9 +361,9 @@ const PropertyDetailPage = () => {
 								<div className="relative mb-4">
 									<input
 										type="date"
-										className="w-full pl-11 pr-4 py-3 rounded-xl border border-gray-200 
-						dark:border-neutral-700 dark:bg-neutral-800 
-						focus:ring-2 focus:ring-amber-400 outline-none transition"
+										className="w-full pl-11 pr-4 py-3 rounded-xl border border-gray-200 dark:border-neutral-700 dark:bg-neutral-800 focus:ring-2 focus:ring-amber-400 outline-none"
+										value={visitDate}
+										onChange={(e) => setVisitDate(e.target.value)}
 									/>
 									<CalendarDays className="absolute left-3 top-3.5 w-5 h-5 text-gray-400" />
 								</div>
@@ -354,24 +376,23 @@ const PropertyDetailPage = () => {
 									<input
 										type="checkbox"
 										className="accent-green-500 scale-125"
+										checked={whatsappOptIn}
+										onChange={(e) => setWhatsappOptIn(e.target.checked)}
 									/>
 								</label>
 
 								<button
-									className="w-full bg-gradient-to-r from-amber-400 to-yellow-500 
-					text-black py-3 rounded-xl font-semibold shadow-md 
-					hover:scale-[1.03] transition"
+									onClick={submitInquiry}
+									disabled={visitLoading}
+									className="w-full bg-gradient-to-r from-amber-400 to-yellow-500 text-black py-3 rounded-xl font-semibold shadow-md hover:scale-[1.03] transition disabled:opacity-60"
 								>
-									Schedule a Visit
+									{visitLoading ? 'Submitting...' : 'Schedule a Visit'}
 								</button>
 							</div>
 						</div>
 
 						{/* PEOPLE ALSO SEARCHED */}
-						<div
-							className="bg-white/80 dark:bg-neutral-900/80 backdrop-blur-xl rounded-3xl 
-			shadow-[0_20px_50px_-12px_rgba(0,0,0,0.25)] border border-gray-100 dark:border-neutral-800"
-						>
+						<div className="bg-white/80 dark:bg-neutral-900/80 backdrop-blur-xl rounded-3xl shadow-xl border border-gray-100 dark:border-neutral-800">
 							<div className="p-6">
 								<h4 className="font-semibold mb-5">People also searched</h4>
 
@@ -380,9 +401,7 @@ const PropertyDetailPage = () => {
 										<Link
 											key={p.id}
 											to={`/property/${p.id}`}
-											className="block p-4 rounded-2xl bg-gray-50 
-							dark:bg-neutral-800 hover:shadow-md 
-							hover:-translate-y-1 transition"
+											className="block p-4 rounded-2xl bg-gray-50 dark:bg-neutral-800 hover:shadow-md hover:-translate-y-1 transition"
 										>
 											<p className="font-medium">{p.title}</p>
 											<p className="text-sm text-gray-500">{p.location}</p>

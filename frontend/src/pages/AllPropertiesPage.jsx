@@ -13,6 +13,7 @@ import {
 	X,
 	ChevronDown,
 	ArrowUpDown,
+	RotateCcw,
 } from 'lucide-react';
 
 const headlines = [
@@ -34,20 +35,21 @@ const AllPropertiesPage = () => {
 	const [priceRange, setPriceRange] = useState([0, 50000]);
 	const [showFilters, setShowFilters] = useState(false);
 
+	// ✅ Filter Tab like NoBroker
+	const [filterTab, setFilterTab] = useState('filters'); // filters | premium
+
 	// UI
 	const [headlineIndex, setHeadlineIndex] = useState(0);
 	const [view, setView] = useState('grid');
 
-	// ✅ Sorting
-	const [sortBy, setSortBy] = useState(''); // price_low | price_high
+	// Sorting
+	const [sortBy, setSortBy] = useState('');
 	const [openSort, setOpenSort] = useState(false);
 
-	// ✅ get rent safely (this fixes sorting/filtering)
+	// ✅ get rent safely
 	const getRent = (p) => {
-		// priority order (jo tumhare backend me ho sakta hai)
 		const val =
 			p?.monthly_rent_amount ?? p?.monthly_rent ?? p?.rent ?? p?.price ?? 0;
-
 		const num = Number(val);
 		return Number.isFinite(num) ? num : 0;
 	};
@@ -78,7 +80,6 @@ const AllPropertiesPage = () => {
 		setPriceRange([0, maxRent]);
 	}, [maxRent]);
 
-	// Helpers
 	const toggleArray = (value, setFn) => {
 		setFn((prev) =>
 			prev.includes(value) ? prev.filter((v) => v !== value) : [...prev, value],
@@ -93,7 +94,7 @@ const AllPropertiesPage = () => {
 		setPriceRange([0, maxRent]);
 	};
 
-	// ✅ FILTERED
+	// FILTERED
 	const filteredProperties = useMemo(() => {
 		return properties.filter((p) => {
 			if (propertyTypes.length && !propertyTypes.includes(p.property_type))
@@ -111,7 +112,6 @@ const AllPropertiesPage = () => {
 
 			if (managedOnly && !p.is_managed) return false;
 
-			// ✅ price filter apply only for rent/pre-occupied
 			if (p.property_type !== 'buy') {
 				const rent = getRent(p);
 				if (rent > 0) {
@@ -123,20 +123,315 @@ const AllPropertiesPage = () => {
 		});
 	}, [properties, propertyTypes, beds, furnishing, managedOnly, priceRange]);
 
-	// ✅ SORTED FINAL LIST (THIS IS REQUIRED)
+	// SORTED FINAL LIST
 	const finalProperties = useMemo(() => {
 		const list = [...filteredProperties];
 
-		if (sortBy === 'price_low') {
-			list.sort((a, b) => getRent(a) - getRent(b));
-		}
-
-		if (sortBy === 'price_high') {
-			list.sort((a, b) => getRent(b) - getRent(a));
-		}
+		if (sortBy === 'price_low') list.sort((a, b) => getRent(a) - getRent(b));
+		if (sortBy === 'price_high') list.sort((a, b) => getRent(b) - getRent(a));
 
 		return list;
 	}, [filteredProperties, sortBy]);
+
+	// ✅ Chip Button component (NoBroker style)
+	const Chip = ({ active, onClick, children }) => (
+		<button
+			type="button"
+			onClick={onClick}
+			className={cn(
+				'px-3 py-2 rounded-lg border text-xs font-semibold transition',
+				active
+					? 'bg-teal-600 text-white border-teal-600 shadow-sm'
+					: 'bg-white hover:bg-slate-50 border-slate-200 text-slate-700',
+			)}
+		>
+			{children}
+		</button>
+	);
+
+	// ✅ Filter Panel (Reusable for Desktop + Mobile)
+	const FiltersPanel = ({ isMobile = false }) => (
+		<div className={cn('w-full', isMobile && 'pb-24')}>
+			{/* Top Tabs like NoBroker */}
+			<div className="flex items-center justify-between gap-2">
+				<div className="flex w-full rounded-lg bg-slate-100 p-1">
+					<button
+						onClick={() => setFilterTab('filters')}
+						className={cn(
+							'flex-1 text-xs font-semibold py-2 rounded-md transition',
+							filterTab === 'filters'
+								? 'bg-white shadow text-teal-700'
+								: 'text-slate-600',
+						)}
+					>
+						Filters
+					</button>
+
+					<button
+						onClick={() => setFilterTab('premium')}
+						className={cn(
+							'flex-1 text-xs font-semibold py-2 rounded-md transition',
+							filterTab === 'premium'
+								? 'bg-white shadow text-teal-700'
+								: 'text-slate-600',
+						)}
+					>
+						Premium Filters
+					</button>
+				</div>
+
+				<button
+					onClick={clearFilters}
+					className="text-xs font-semibold text-slate-600 hover:text-slate-900 flex items-center gap-1"
+				>
+					<RotateCcw className="w-4 h-4" />
+					Reset
+				</button>
+			</div>
+
+			{/* ✅ CONTENT SWITCH */}
+			{filterTab === 'filters' ? (
+				/* ========================= NORMAL FILTERS ========================= */
+				<div className="mt-5 space-y-6">
+					{/* ✅ BHK TYPE */}
+					<div className="space-y-3">
+						<h4 className="text-sm font-bold text-slate-900">BHK Type</h4>
+						<div className="grid grid-cols-3 gap-2">
+							{['1', '2', '3', '4', '5+'].map((b) => (
+								<button
+									key={b}
+									type="button"
+									onClick={() => toggleArray(b, setBeds)}
+									className={cn(
+										'px-3 py-2 rounded-lg border text-xs font-semibold transition',
+										beds.includes(b)
+											? 'bg-teal-600 text-white border-teal-600 shadow-sm'
+											: 'bg-white hover:bg-slate-50 border-slate-200 text-slate-700',
+									)}
+								>
+									{b === '5+' ? '4+ BHK' : `${b} BHK`}
+								</button>
+							))}
+						</div>
+					</div>
+
+					{/* ✅ RENT RANGE */}
+					<div className="space-y-3">
+						<div className="flex items-center justify-between">
+							<h4 className="text-sm font-bold text-slate-900">Rent Range</h4>
+							<span className="text-[11px] font-semibold text-slate-600">
+								₹{priceRange[0].toLocaleString()} - ₹
+								{priceRange[1].toLocaleString()}
+							</span>
+						</div>
+
+						<div className="bg-white border border-slate-200 rounded-xl px-4 py-4">
+							<Slider
+								min={0}
+								max={maxRent}
+								step={500}
+								value={priceRange}
+								onValueChange={setPriceRange}
+							/>
+						</div>
+					</div>
+
+					{/* ✅ PROPERTY TYPE */}
+					<div className="space-y-3">
+						<h4 className="text-sm font-bold text-slate-900">Property Type</h4>
+
+						<div className="space-y-2">
+							{['rent', 'pre-occupied', 'buy'].map((type) => (
+								<label
+									key={type}
+									className="flex items-center gap-3 rounded-xl px-3 py-2 hover:bg-slate-50 transition cursor-pointer"
+								>
+									<Checkbox
+										checked={propertyTypes.includes(type)}
+										onCheckedChange={() => toggleArray(type, setPropertyTypes)}
+									/>
+									<span className="capitalize text-sm font-medium text-slate-700">
+										{type}
+									</span>
+								</label>
+							))}
+						</div>
+					</div>
+
+					{/* ✅ Furnishing */}
+					<div className="space-y-3">
+						<h4 className="text-sm font-bold text-slate-900">Furnishing</h4>
+						<div className="space-y-2">
+							{['Furnished', 'Semi-Furnished', 'Unfurnished'].map((f) => (
+								<label
+									key={f}
+									className="flex items-center gap-3 rounded-xl px-3 py-2 hover:bg-slate-50 transition cursor-pointer"
+								>
+									<Checkbox
+										checked={furnishing.includes(f)}
+										onCheckedChange={() => toggleArray(f, setFurnishing)}
+									/>
+									<span className="text-sm font-medium text-slate-700">
+										{f}
+									</span>
+								</label>
+							))}
+						</div>
+					</div>
+
+					{/* ✅ Managed */}
+					<div className="space-y-3">
+						<h4 className="text-sm font-bold text-slate-900">Show Only</h4>
+						<label className="flex items-center gap-3 rounded-xl px-3 py-2 hover:bg-slate-50 transition cursor-pointer">
+							<Checkbox
+								checked={managedOnly}
+								onCheckedChange={() => setManagedOnly((p) => !p)}
+							/>
+							<span className="text-sm font-medium text-slate-700">
+								Managed Homes Only
+							</span>
+						</label>
+					</div>
+
+					{/* ✅ Mobile buttons */}
+					{isMobile && (
+						<div className="flex gap-3 pt-2">
+							<Button
+								variant="outline"
+								className="w-full rounded-xl"
+								onClick={clearFilters}
+							>
+								Clear
+							</Button>
+							<Button
+								variant="teal"
+								className="w-full rounded-xl"
+								onClick={() => setShowFilters(false)}
+							>
+								Apply
+							</Button>
+						</div>
+					)}
+				</div>
+			) : (
+				/* ========================= PREMIUM FILTERS (NO BROKER STYLE UI) ========================= */
+				<div className="mt-5 space-y-6">
+					{/* Built Up Area */}
+					<div className="space-y-3">
+						<h4 className="text-sm font-bold text-slate-900">
+							Built Up Area (sq.ft.)
+						</h4>
+						<div className="bg-white border border-slate-200 rounded-xl px-4 py-4">
+							<Slider min={0} max={10000} step={100} value={[0, 10000]} />
+							<div className="mt-4 flex gap-3">
+								<input
+									className="w-full border rounded-lg px-3 py-2 text-sm outline-none"
+									placeholder="0"
+								/>
+								<input
+									className="w-full border rounded-lg px-3 py-2 text-sm outline-none"
+									placeholder="10,000"
+								/>
+							</div>
+						</div>
+					</div>
+
+					{/* Property Age */}
+					<div className="space-y-3">
+						<h4 className="text-sm font-bold text-slate-900">Property Age</h4>
+						<div className="grid grid-cols-2 gap-2">
+							{['< 1 year', '< 3 years', '< 5 years', '< 10 years'].map((t) => (
+								<button
+									key={t}
+									type="button"
+									className="px-3 py-2 rounded-lg border bg-white hover:bg-slate-50 text-xs font-semibold text-slate-700"
+								>
+									{t}
+								</button>
+							))}
+						</div>
+					</div>
+
+					{/* Show Only */}
+					<div className="space-y-3">
+						<h4 className="text-sm font-bold text-slate-900">Show Only</h4>
+						<div className="grid grid-cols-2 gap-2">
+							{['Gated Societies', 'Non Veg Allowed', 'With Photos', 'Gym'].map(
+								(t) => (
+									<button
+										key={t}
+										type="button"
+										className="px-3 py-2 rounded-lg border bg-white hover:bg-slate-50 text-xs font-semibold text-slate-700"
+									>
+										{t}
+									</button>
+								),
+							)}
+						</div>
+					</div>
+
+					{/* Bathroom */}
+					<div className="space-y-3">
+						<h4 className="text-sm font-bold text-slate-900">Bathroom</h4>
+						<div className="flex flex-wrap gap-2">
+							{['1 or more', '2 or more', '3 or more'].map((t) => (
+								<button
+									key={t}
+									type="button"
+									className="px-3 py-2 rounded-lg border bg-white hover:bg-slate-50 text-xs font-semibold text-slate-700"
+								>
+									{t}
+								</button>
+							))}
+						</div>
+					</div>
+
+					{/* Floors */}
+					<div className="space-y-3">
+						<h4 className="text-sm font-bold text-slate-900">Floors</h4>
+						<div className="grid grid-cols-3 gap-2">
+							{[
+								'Ground',
+								'1 to 3',
+								'4 to 6',
+								'7 to 9',
+								'10 & above',
+								'Custom',
+							].map((t) => (
+								<button
+									key={t}
+									type="button"
+									className="px-3 py-2 rounded-lg border bg-white hover:bg-slate-50 text-xs font-semibold text-slate-700"
+								>
+									{t}
+								</button>
+							))}
+						</div>
+					</div>
+
+					{/* ✅ Mobile buttons */}
+					{isMobile && (
+						<div className="flex gap-3 pt-2">
+							<Button
+								variant="outline"
+								className="w-full rounded-xl"
+								onClick={() => setShowFilters(false)}
+							>
+								Close
+							</Button>
+							<Button
+								variant="teal"
+								className="w-full rounded-xl"
+								onClick={() => setShowFilters(false)}
+							>
+								Apply
+							</Button>
+						</div>
+					)}
+				</div>
+			)}
+		</div>
+	);
 
 	return (
 		<Layout>
@@ -195,21 +490,21 @@ const AllPropertiesPage = () => {
 						</button>
 					</div>
 
-					{/* sort */}
+					{/* sort (NoBroker style dropdown) */}
 					<div className="relative">
 						<button
 							onClick={() => setOpenSort((p) => !p)}
-							className="px-4 py-2 rounded-full border bg-white shadow-sm hover:shadow-md transition text-sm flex items-center gap-2"
+							className="px-4 py-2 rounded-lg border bg-white shadow-sm hover:shadow-md transition text-sm flex items-center gap-2"
 						>
 							<ArrowUpDown className="w-4 h-4 text-slate-500" />
-							Sort
+							Sort By
 							<ChevronDown
 								className={cn('w-4 h-4 transition', openSort && 'rotate-180')}
 							/>
 						</button>
 
 						{openSort && (
-							<div className="absolute right-0 mt-2 w-56 bg-white rounded-2xl shadow-xl border z-50 overflow-hidden">
+							<div className="absolute right-0 mt-2 w-56 bg-white rounded-xl shadow-xl border z-50 overflow-hidden">
 								<button
 									onClick={() => {
 										setSortBy('price_low');
@@ -220,7 +515,7 @@ const AllPropertiesPage = () => {
 										sortBy === 'price_low' && 'bg-slate-50 font-semibold',
 									)}
 								>
-									Price: Low to High
+									Rent (Low to High)
 								</button>
 
 								<button
@@ -233,7 +528,7 @@ const AllPropertiesPage = () => {
 										sortBy === 'price_high' && 'bg-slate-50 font-semibold',
 									)}
 								>
-									Price: High to Low
+									Rent (High to Low)
 								</button>
 
 								<button
@@ -252,7 +547,7 @@ const AllPropertiesPage = () => {
 					{/* mobile filter */}
 					<Button
 						variant="outline"
-						className="lg:hidden rounded-full"
+						className="lg:hidden rounded-lg"
 						onClick={() => setShowFilters(true)}
 					>
 						<Filter className="w-4 h-4 mr-2" /> Filters
@@ -260,146 +555,44 @@ const AllPropertiesPage = () => {
 				</div>
 
 				<div className="grid lg:grid-cols-[320px_1fr] gap-8">
-					{/* FILTERS */}
-					<aside
-						className={cn(
-							'bg-white/80 backdrop-blur-xl rounded-3xl p-6 shadow-[0_8px_30px_rgba(0,0,0,0.06)] space-y-7 sticky top-24 h-fit border border-slate-200/60',
-							showFilters
-								? 'fixed inset-0 z-50 overflow-y-auto lg:static lg:inset-auto'
-								: 'hidden lg:block',
-						)}
-					>
-						{/* mobile header */}
-						<div className="flex items-center justify-between lg:hidden">
-							<h3 className="text-lg font-bold">Filters</h3>
-							<button
-								onClick={() => setShowFilters(false)}
-								className="p-2 rounded-xl border bg-white shadow-sm"
-							>
-								<X className="w-4 h-4" />
-							</button>
-						</div>
-
-						{/* Property type */}
-						<div className="space-y-3">
-							<h4 className="font-semibold text-slate-900">Property Type</h4>
-
-							<div className="space-y-2">
-								{['rent', 'pre-occupied', 'buy'].map((type) => (
-									<label
-										key={type}
-										className="flex items-center gap-3 rounded-xl px-3 py-2 hover:bg-slate-50 transition cursor-pointer"
-									>
-										<Checkbox
-											checked={propertyTypes.includes(type)}
-											onCheckedChange={() =>
-												toggleArray(type, setPropertyTypes)
-											}
-										/>
-										<span className="capitalize text-sm font-medium text-slate-700">
-											{type}
-										</span>
-									</label>
-								))}
+					{/* ✅ DESKTOP FILTERS (NoBroker style) */}
+					<aside className="hidden lg:block">
+						<div className="bg-white rounded-xl border border-slate-200 shadow-sm sticky top-24">
+							<div className="p-4 border-b border-slate-200">
+								<h3 className="text-sm font-bold text-slate-900">Filters</h3>
 							</div>
-						</div>
-
-						{/* Beds */}
-						<div className="space-y-3">
-							<h4 className="font-semibold text-slate-900">Beds</h4>
-							<div className="space-y-2">
-								{['1', '2', '3', '4', '5+'].map((b) => (
-									<label
-										key={b}
-										className="flex items-center gap-3 rounded-xl px-3 py-2 hover:bg-slate-50 transition cursor-pointer"
-									>
-										<Checkbox
-											checked={beds.includes(b)}
-											onCheckedChange={() => toggleArray(b, setBeds)}
-										/>
-										<span className="text-sm font-medium text-slate-700">
-											{b}
-										</span>
-									</label>
-								))}
+							<div className="p-4">
+								<FiltersPanel />
 							</div>
-						</div>
-
-						{/* Furnishing */}
-						<div className="space-y-3">
-							<h4 className="font-semibold text-slate-900">Furnishing</h4>
-							<div className="space-y-2">
-								{['Furnished', 'Semi-Furnished', 'Unfurnished'].map((f) => (
-									<label
-										key={f}
-										className="flex items-center gap-3 rounded-xl px-3 py-2 hover:bg-slate-50 transition cursor-pointer"
-									>
-										<Checkbox
-											checked={furnishing.includes(f)}
-											onCheckedChange={() => toggleArray(f, setFurnishing)}
-										/>
-										<span className="text-sm font-medium text-slate-700">
-											{f}
-										</span>
-									</label>
-								))}
-							</div>
-						</div>
-
-						{/* Managed */}
-						<div className="space-y-3">
-							<h4 className="font-semibold text-slate-900">Managed</h4>
-							<label className="flex items-center gap-3 rounded-xl px-3 py-2 hover:bg-slate-50 transition cursor-pointer">
-								<Checkbox
-									checked={managedOnly}
-									onCheckedChange={() => setManagedOnly((p) => !p)}
-								/>
-								<span className="text-sm font-medium text-slate-700">
-									Show Managed Homes Only
-								</span>
-							</label>
-						</div>
-
-						{/* Price */}
-						<div className="space-y-3">
-							<div className="flex items-center justify-between">
-								<h4 className="font-semibold text-slate-900">Monthly Rent</h4>
-								<span className="text-xs font-semibold text-slate-600 bg-slate-100 px-3 py-1 rounded-full">
-									₹{priceRange[0].toLocaleString()} - ₹
-									{priceRange[1].toLocaleString()}
-								</span>
-							</div>
-
-							<div className="rounded-2xl border border-slate-200/60 bg-white p-4 shadow-sm">
-								<Slider
-									min={0}
-									max={maxRent}
-									step={500}
-									value={priceRange}
-									onValueChange={setPriceRange}
-								/>
-							</div>
-						</div>
-
-						{/* Actions */}
-						<div className="flex gap-3 pt-2">
-							<Button
-								variant="outline"
-								className="w-full rounded-2xl"
-								onClick={clearFilters}
-							>
-								Clear
-							</Button>
-
-							<Button
-								variant="teal"
-								className="w-full rounded-2xl lg:hidden"
-								onClick={() => setShowFilters(false)}
-							>
-								Apply
-							</Button>
 						</div>
 					</aside>
+
+					{/* ✅ MOBILE FILTER DRAWER */}
+					{showFilters && (
+						<div className="fixed inset-0 z-[9999] lg:hidden">
+							{/* overlay */}
+							<div
+								className="absolute inset-0 bg-black/40"
+								onClick={() => setShowFilters(false)}
+							/>
+							{/* sheet */}
+							<div className="absolute left-0 top-0 bottom-0 w-[92%] max-w-[360px] bg-white shadow-2xl">
+								<div className="p-4 border-b flex items-center justify-between">
+									<h3 className="text-base font-bold">Filters</h3>
+									<button
+										onClick={() => setShowFilters(false)}
+										className="p-2 rounded-lg border bg-white"
+									>
+										<X className="w-4 h-4" />
+									</button>
+								</div>
+
+								<div className="p-4 overflow-y-auto h-[calc(100vh-64px)]">
+									<FiltersPanel isMobile />
+								</div>
+							</div>
+						</div>
+					)}
 
 					{/* PROPERTIES */}
 					<div>
@@ -426,6 +619,9 @@ const AllPropertiesPage = () => {
 					</div>
 				</div>
 			</div>
+			<style>{`.hide-scrollbar::-webkit-scrollbar { display: none; }
+  .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+`}</style>
 		</Layout>
 	);
 };
